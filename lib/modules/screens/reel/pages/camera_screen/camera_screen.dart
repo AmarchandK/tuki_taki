@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/instance_manager.dart';
 import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
+import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/capture_button.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/right_bar.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/right_bar_icons.dart';
@@ -18,29 +19,24 @@ class CameraReel extends StatefulWidget {
 }
 
 class _CameraReelState extends State<CameraReel> {
-  final ReelCubit reelCubit = Get.put<ReelCubit>(ReelCubit());
-
+  final ReelCubit reelCubit = ReelCubit();
   List<CameraDescription> cameraList = [];
   late final CameraController cameraController;
   @override
   void initState() {
-    // reelCubit.startCamera();
+    Get.put(reelCubit);
     startCamera();
     super.initState();
   }
 
   void startCamera() async {
     cameraList = await availableCameras();
-    cameraController = CameraController(cameraList[0], ResolutionPreset.medium);
-    cameraController.initialize().then((value) {
-      if (!mounted) {
-        log("Camera Not Mounted");
-        return;
-      }
-      setState(() {});
-    }).catchError((error) {
-      log(error.toString());
-    });
+    if (cameraList.isNotEmpty) {
+      cameraController =
+          CameraController(cameraList[0], ResolutionPreset.medium);
+      await cameraController.initialize();
+      reelCubit.setCameraAsInitialised();
+    }
   }
 
   @override
@@ -52,11 +48,11 @@ class _CameraReelState extends State<CameraReel> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocBuilder(
+      child: BlocBuilder<ReelCubit, ReelStateModel>(
           bloc: reelCubit,
           builder: (context, state) {
             return Scaffold(
-              body: cameraController.value.isInitialized
+              body: state.isCameraControllerInitialsed
                   ? Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

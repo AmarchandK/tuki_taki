@@ -8,6 +8,9 @@ part 'reel_state.freezed.dart';
 class ReelStateModel with _$ReelStateModel {
   factory ReelStateModel({
     File? videoFile,
-    @Default([]) List<CameraDescription> cameraList,
+    @Default(false) bool isLoading,
+    @Default(false) bool isCameraControllerInitialsed,
+    @Default(false) bool isRecording,
+    @Default(0) int cameraPosition,
   }) = _ReelStateModel;
 }

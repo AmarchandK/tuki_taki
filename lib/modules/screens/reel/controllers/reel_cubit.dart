@@ -16,23 +16,16 @@ class ReelCubit extends Cubit<ReelStateModel> {
     }
   }
 
-  void startCamera() async {
-    final List<CameraDescription> cameraList = await availableCameras();
-    emit(state.copyWith(cameraList: cameraList));
+  void setCameraAsInitialised() {
+    emit(state.copyWith(isCameraControllerInitialsed: true));
   }
 
-  // void startCamera() async {
-  //   final cameraList = await availableCameras();
-  //   state.copyWith(cameraList: cameraList);
-  //   cameraController = CameraController(cameraList[0], ResolutionPreset.medium);
-  //   cameraController.initialize().then((value) {
-  //     if (!mounted) {
-  //       log("Camera Not Mounted");
-  //       return;
-  //     }
-  //     setState(() {});
-  //   }).catchError((error) {
-  //     log(error.toString());
-  //   });
-  // }
+  void setRecordingAs(bool record) {
+    emit(state.copyWith(isRecording: record));
+  }
+
+  void setVideo(String videoPath) {
+    final video = File(videoPath);
+    emit(state.copyWith(videoFile: video));
+  }
 }

@@ -17,7 +17,10 @@ final _privateConstructorUsedError = UnsupportedError(
 /// @nodoc
 mixin _$ReelStateModel {
   File? get videoFile => throw _privateConstructorUsedError;
-  List<CameraDescription> get cameraList => throw _privateConstructorUsedError;
+  bool get isLoading => throw _privateConstructorUsedError;
+  bool get isCameraControllerInitialsed => throw _privateConstructorUsedError;
+  bool get isRecording => throw _privateConstructorUsedError;
+  int get cameraPosition => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ReelStateModelCopyWith<ReelStateModel> get copyWith =>
@@ -30,7 +33,12 @@ abstract class $ReelStateModelCopyWith<$Res> {
           ReelStateModel value, $Res Function(ReelStateModel) then) =
       _$ReelStateModelCopyWithImpl<$Res, ReelStateModel>;
   @useResult
-  $Res call({File? videoFile, List<CameraDescription> cameraList});
+  $Res call(
+      {File? videoFile,
+      bool isLoading,
+      bool isCameraControllerInitialsed,
+      bool isRecording,
+      int cameraPosition});
 }
 
 /// @nodoc
@@ -47,17 +55,32 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
   @override
   $Res call({
     Object? videoFile = freezed,
-    Object? cameraList = null,
+    Object? isLoading = null,
+    Object? isCameraControllerInitialsed = null,
+    Object? isRecording = null,
+    Object? cameraPosition = null,
   }) {
     return _then(_value.copyWith(
       videoFile: freezed == videoFile
           ? _value.videoFile
           : videoFile // ignore: cast_nullable_to_non_nullable
               as File?,
-      cameraList: null == cameraList
-          ? _value.cameraList
-          : cameraList // ignore: cast_nullable_to_non_nullable
-              as List<CameraDescription>,
+      isLoading: null == isLoading
+          ? _value.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isCameraControllerInitialsed: null == isCameraControllerInitialsed
+          ? _value.isCameraControllerInitialsed
+          : isCameraControllerInitialsed // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isRecording: null == isRecording
+          ? _value.isRecording
+          : isRecording // ignore: cast_nullable_to_non_nullable
+              as bool,
+      cameraPosition: null == cameraPosition
+          ? _value.cameraPosition
+          : cameraPosition // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -70,7 +93,12 @@ abstract class _$$_ReelStateModelCopyWith<$Res>
       __$$_ReelStateModelCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({File? videoFile, List<CameraDescription> cameraList});
+  $Res call(
+      {File? videoFile,
+      bool isLoading,
+      bool isCameraControllerInitialsed,
+      bool isRecording,
+      int cameraPosition});
 }
 
 /// @nodoc
@@ -85,17 +113,32 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? videoFile = freezed,
-    Object? cameraList = null,
+    Object? isLoading = null,
+    Object? isCameraControllerInitialsed = null,
+    Object? isRecording = null,
+    Object? cameraPosition = null,
   }) {
     return _then(_$_ReelStateModel(
       videoFile: freezed == videoFile
           ? _value.videoFile
           : videoFile // ignore: cast_nullable_to_non_nullable
               as File?,
-      cameraList: null == cameraList
-          ? _value._cameraList
-          : cameraList // ignore: cast_nullable_to_non_nullable
-              as List<CameraDescription>,
+      isLoading: null == isLoading
+          ? _value.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isCameraControllerInitialsed: null == isCameraControllerInitialsed
+          ? _value.isCameraControllerInitialsed
+          : isCameraControllerInitialsed // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isRecording: null == isRecording
+          ? _value.isRecording
+          : isRecording // ignore: cast_nullable_to_non_nullable
+              as bool,
+      cameraPosition: null == cameraPosition
+          ? _value.cameraPosition
+          : cameraPosition // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -104,23 +147,30 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
 
 class _$_ReelStateModel implements _ReelStateModel {
   _$_ReelStateModel(
-      {this.videoFile, final List<CameraDescription> cameraList = const []})
-      : _cameraList = cameraList;
+      {this.videoFile,
+      this.isLoading = false,
+      this.isCameraControllerInitialsed = false,
+      this.isRecording = false,
+      this.cameraPosition = 0});
 
   @override
   final File? videoFile;
-  final List<CameraDescription> _cameraList;
   @override
   @JsonKey()
-  List<CameraDescription> get cameraList {
-    if (_cameraList is EqualUnmodifiableListView) return _cameraList;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_cameraList);
-  }
+  final bool isLoading;
+  @override
+  @JsonKey()
+  final bool isCameraControllerInitialsed;
+  @override
+  @JsonKey()
+  final bool isRecording;
+  @override
+  @JsonKey()
+  final int cameraPosition;
 
   @override
   String toString() {
-    return 'ReelStateModel(videoFile: $videoFile, cameraList: $cameraList)';
+    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraPosition: $cameraPosition)';
   }
 
   @override
@@ -130,13 +180,21 @@ class _$_ReelStateModel implements _ReelStateModel {
             other is _$_ReelStateModel &&
             (identical(other.videoFile, videoFile) ||
                 other.videoFile == videoFile) &&
-            const DeepCollectionEquality()
-                .equals(other._cameraList, _cameraList));
+            (identical(other.isLoading, isLoading) ||
+                other.isLoading == isLoading) &&
+            (identical(other.isCameraControllerInitialsed,
+                    isCameraControllerInitialsed) ||
+                other.isCameraControllerInitialsed ==
+                    isCameraControllerInitialsed) &&
+            (identical(other.isRecording, isRecording) ||
+                other.isRecording == isRecording) &&
+            (identical(other.cameraPosition, cameraPosition) ||
+                other.cameraPosition == cameraPosition));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, videoFile, const DeepCollectionEquality().hash(_cameraList));
+  int get hashCode => Object.hash(runtimeType, videoFile, isLoading,
+      isCameraControllerInitialsed, isRecording, cameraPosition);
 
   @JsonKey(ignore: true)
   @override
@@ -148,12 +206,21 @@ class _$_ReelStateModel implements _ReelStateModel {
 abstract class _ReelStateModel implements ReelStateModel {
   factory _ReelStateModel(
       {final File? videoFile,
-      final List<CameraDescription> cameraList}) = _$_ReelStateModel;
+      final bool isLoading,
+      final bool isCameraControllerInitialsed,
+      final bool isRecording,
+      final int cameraPosition}) = _$_ReelStateModel;
 
   @override
   File? get videoFile;
   @override
-  List<CameraDescription> get cameraList;
+  bool get isLoading;
+  @override
+  bool get isCameraControllerInitialsed;
+  @override
+  bool get isRecording;
+  @override
+  int get cameraPosition;
   @override
   @JsonKey(ignore: true)
   _$$_ReelStateModelCopyWith<_$_ReelStateModel> get copyWith =>
