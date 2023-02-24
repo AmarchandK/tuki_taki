@@ -1,11 +1,13 @@
+import 'dart:developer';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 
 class ButtonBarIcons extends StatelessWidget {
-  const ButtonBarIcons({
-    super.key,
-  });
+  ButtonBarIcons({super.key, required this.cameraController});
+  final CameraController cameraController;
+  bool isRecord = false;
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +24,33 @@ class ButtonBarIcons extends StatelessWidget {
             borderRadius: BorderRadius.circular(50),
           ),
           child: RawMaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              isRecord ? stopVideo() : takeVideo();
+            },
             fillColor: Colors.red,
-            shape: const CircleBorder(),
+            shape: isRecord
+                ? const RoundedRectangleBorder()
+                : const CircleBorder(),
           ),
         ),
         CameraPageIcons(
-          icon: Icons.swap_horiz_sharp,
+          icon: Icons.flip_camera_android_outlined,
           onTap: () {},
           color: Colors.black,
         ),
       ],
     );
+  }
+
+  Future<void> takeVideo() async {
+    await cameraController.startVideoRecording();
+    isRecord = true;
+  }
+
+  Future<XFile> stopVideo() async {
+    final XFile videoFile = await cameraController.stopVideoRecording();
+    log(videoFile.path.toString());
+    isRecord = false;
+    return videoFile;
   }
 }
