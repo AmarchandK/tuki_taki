@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:tuki_taki/modules/screens/camera_screen/widgets/icons.dart';
+import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 
 class ButtonBarIcons extends StatelessWidget {
   const ButtonBarIcons({
