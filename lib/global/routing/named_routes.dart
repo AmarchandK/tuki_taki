@@ -1,6 +1,5 @@
 import 'package:get/route_manager.dart';
-import 'package:tuki_taki/view/confirm_screen.dart';
-import 'package:tuki_taki/view/home_page.dart';
+import 'package:tuki_taki/modules/screens/home_page.dart';
 
 enum NamedRoutes { home, confirm }
 
@@ -19,5 +18,5 @@ extension NamedRoutesData on NamedRoutes {
 
 List<GetPage> allRoutes = [
   GetPage(name: NamedRoutes.home.path, page: () => const HomePage()),
-  GetPage(name: NamedRoutes.confirm.path, page: () =>  ConfirmScreen())
+  // GetPage(name: NamedRoutes.confirm.path, page: () => ConfirmScreen())
 ];
