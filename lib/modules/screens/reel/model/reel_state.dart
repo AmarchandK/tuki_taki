@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:camera/camera.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part 'reel_state.freezed.dart';
 
@@ -15,6 +14,5 @@ class ReelStateModel with _$ReelStateModel {
     @Default(0) double trimStart,
     @Default(15) double trimEndValue,
     @Default(false) bool trimPlaying,
-    @Default(false) bool trimIsProgressing,
   }) = _ReelStateModel;
 }

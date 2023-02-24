@@ -66,10 +66,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                       onPressed: () {
                         videoPlayerController.setPlaybackSpeed(2);
                       },
-                      icon: const Icon(
-                        Icons.speed,
-                        color: Colors.white,
-                      ),
+                      icon: const Icon(Icons.speed, color: Colors.white),
                     ),
                   ],
                 ))

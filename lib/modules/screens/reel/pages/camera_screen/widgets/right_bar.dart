@@ -1,12 +1,10 @@
-
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 
 class TopBarIcons extends StatelessWidget {
-  const TopBarIcons({
-    super.key,
-  });
-
+  const TopBarIcons({super.key, required this.cameraController});
+  final CameraController cameraController;
   @override
   Widget build(BuildContext context) {
     return Align(

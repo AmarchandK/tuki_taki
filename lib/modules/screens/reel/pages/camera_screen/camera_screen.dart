@@ -24,7 +24,7 @@ class _CameraReelState extends State<CameraReel> {
   late final CameraController cameraController;
   @override
   void initState() {
-    Get.put(reelCubit);
+    Get.put(reelCubit, permanent: true);
     startCamera();
     super.initState();
   }
@@ -63,9 +63,9 @@ class _CameraReelState extends State<CameraReel> {
                             cameraController,
                             child: Stack(
                               fit: StackFit.expand,
-                              children: const [
-                                TopBarIcons(),
-                                RightBarIcons(),
+                              children: [
+                                TopBarIcons(cameraController: cameraController),
+                                const RightBarIcons(),
                               ],
                             ),
                           ),
