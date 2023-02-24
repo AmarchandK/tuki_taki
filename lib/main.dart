@@ -5,6 +5,7 @@ import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/view/camera_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 
