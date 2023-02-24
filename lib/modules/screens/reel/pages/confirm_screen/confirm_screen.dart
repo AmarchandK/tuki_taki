@@ -1,34 +1,28 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:get/instance_manager.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
-import 'package:tuki_taki/modules/screens/reel/pages/confirm_screen/widgets/trim.dart';
+import 'package:tuki_taki/global/routing/named_routes.dart';
+import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
 import 'package:video_player/video_player.dart';
 
 class ConfirmScreen extends StatefulWidget {
-  ConfirmScreen({super.key, this.videoPath});
-  final String? videoPath;
-  File? file;
+  const ConfirmScreen({super.key});
+
   @override
   State<ConfirmScreen> createState() => _ConfirmScreenState();
 }
 
 class _ConfirmScreenState extends State<ConfirmScreen> {
   late final VideoPlayerController videoPlayerController;
+  final ReelCubit controller = Get.find<ReelCubit>();
   @override
   void initState() {
-    String? videoPath = widget.videoPath ?? Get.arguments["videoPath"];
-    if (videoPath != null) {
-      widget.file = File(videoPath.toString());
-      videoPlayerController = VideoPlayerController.file(widget.file!);
-      videoPlayerController.initialize();
-      videoPlayerController.play();
-      videoPlayerController.setVolume(1);
-      videoPlayerController.setLooping(true);
-    } else {
-      CustomRouting.pop();
-    }
-
+    videoPlayerController =
+        VideoPlayerController.file(controller.state.videoFile!);
+    videoPlayerController.initialize();
+    videoPlayerController.play();
+    videoPlayerController.setVolume(1);
+    videoPlayerController.setLooping(true);
     super.initState();
   }
 
@@ -61,11 +55,8 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {
-                        Get.off(() => VideoTrim(
-                              videoPath: widget.file,
-                            ));
-                      },
+                      onPressed: () =>
+                          CustomRouting.pushNamed(NamedRoutes.trim.path),
                       icon: const Icon(
                         Icons.cut_outlined,
                         color: Colors.white,
@@ -87,6 +78,6 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       ),
     );
   }
+}
 
 /////////////////////////////////////////////////////////
-}

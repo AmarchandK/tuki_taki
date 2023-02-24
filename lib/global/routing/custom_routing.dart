@@ -70,7 +70,7 @@ class CustomRouting {
       return false;
     });
     if (!canPop) {
-      CustomRouting.replaceStackWithNamed(NamedRoutes.home.path);
+      CustomRouting.replaceStackWithNamed(NamedRoutes.reel.path);
     }
   }
 

@@ -12,5 +12,9 @@ class ReelStateModel with _$ReelStateModel {
     @Default(false) bool isCameraControllerInitialsed,
     @Default(false) bool isRecording,
     @Default(0) int cameraPosition,
+    @Default(0) double trimStart,
+    @Default(15) double trimEndValue,
+    @Default(false) bool trimPlaying,
+    @Default(false) bool trimIsProgressing,
   }) = _ReelStateModel;
 }

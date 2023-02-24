@@ -1,8 +1,11 @@
 import 'dart:io';
-import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/route_manager.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tuki_taki/global/routing/custom_routing.dart';
+import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
+import 'package:tuki_taki/modules/screens/reel/pages/confirm_screen/confirm_screen.dart';
 
 class ReelCubit extends Cubit<ReelStateModel> {
   ReelCubit() : super(ReelStateModel());
@@ -11,8 +14,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     final XFile? video =
         await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (video != null) {
-      File pickedVideo = File(video.path);
-      emit(state.copyWith(videoFile: pickedVideo));
+      setVideo(video.path);
     }
   }
 
@@ -27,5 +29,6 @@ class ReelCubit extends Cubit<ReelStateModel> {
   void setVideo(String videoPath) {
     final video = File(videoPath);
     emit(state.copyWith(videoFile: video));
+    CustomRouting.pushNamed(NamedRoutes.confirm.path);
   }
 }

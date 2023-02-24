@@ -1,17 +1,16 @@
-
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:get/instance_manager.dart';
+import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
-class VideoTrim extends StatefulWidget {
-  const VideoTrim({super.key, this.videoPath});
-  final File? videoPath;
+class TrimVedoPage extends StatefulWidget {
+  const TrimVedoPage({super.key});
   @override
-  State<VideoTrim> createState() => _VideoTrimState();
+  State<TrimVedoPage> createState() => _TrimVedoPageState();
 }
 
-class _VideoTrimState extends State<VideoTrim> {
+class _TrimVedoPageState extends State<TrimVedoPage> {
+  final ReelCubit controller = Get.find<ReelCubit>();
   @override
   void initState() {
     loadVideo();
@@ -24,7 +23,7 @@ class _VideoTrimState extends State<VideoTrim> {
   bool isPlaying = false;
   bool progressVisibileity = false;
   loadVideo() {
-    trimmer.loadVideo(videoFile: widget.videoPath!);
+    trimmer.loadVideo(videoFile: controller.state.videoFile!);
   }
 
   saveVideo() async {
