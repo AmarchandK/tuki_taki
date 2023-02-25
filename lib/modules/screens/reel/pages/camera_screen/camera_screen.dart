@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,6 @@ class CameraReel extends StatefulWidget {
 
 class _CameraReelState extends State<CameraReel> {
   final ReelCubit reelCubit = ReelCubit();
-  List<CameraDescription> cameraList = [];
   late final CameraController cameraController;
   @override
   void initState() {
@@ -30,12 +28,11 @@ class _CameraReelState extends State<CameraReel> {
   }
 
   void startCamera() async {
-    cameraList = await availableCameras();
-    if (cameraList.isNotEmpty) {
-      cameraController =
-          CameraController(cameraList[0], ResolutionPreset.medium);
+    await reelCubit.getAvailableCameras();
+    if (reelCubit.state.cameraList.isNotEmpty) {
+      cameraController = reelCubit.switchCamera(0);
       await cameraController.initialize();
-      reelCubit.setCameraAsInitialised();
+      reelCubit.setCameraAsInitialised(true);
     }
   }
 

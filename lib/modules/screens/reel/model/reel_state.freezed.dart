@@ -21,10 +21,10 @@ mixin _$ReelStateModel {
   bool get isCameraControllerInitialsed => throw _privateConstructorUsedError;
   bool get isRecording => throw _privateConstructorUsedError;
   int get cameraPosition => throw _privateConstructorUsedError;
+  List<CameraDescription> get cameraList => throw _privateConstructorUsedError;
   double get trimStart => throw _privateConstructorUsedError;
   double get trimEndValue => throw _privateConstructorUsedError;
   bool get trimPlaying => throw _privateConstructorUsedError;
-  bool get trimIsProgressing => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ReelStateModelCopyWith<ReelStateModel> get copyWith =>
@@ -43,10 +43,10 @@ abstract class $ReelStateModelCopyWith<$Res> {
       bool isCameraControllerInitialsed,
       bool isRecording,
       int cameraPosition,
+      List<CameraDescription> cameraList,
       double trimStart,
       double trimEndValue,
-      bool trimPlaying,
-      bool trimIsProgressing});
+      bool trimPlaying});
 }
 
 /// @nodoc
@@ -67,10 +67,10 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
     Object? isCameraControllerInitialsed = null,
     Object? isRecording = null,
     Object? cameraPosition = null,
+    Object? cameraList = null,
     Object? trimStart = null,
     Object? trimEndValue = null,
     Object? trimPlaying = null,
-    Object? trimIsProgressing = null,
   }) {
     return _then(_value.copyWith(
       videoFile: freezed == videoFile
@@ -93,6 +93,10 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
           ? _value.cameraPosition
           : cameraPosition // ignore: cast_nullable_to_non_nullable
               as int,
+      cameraList: null == cameraList
+          ? _value.cameraList
+          : cameraList // ignore: cast_nullable_to_non_nullable
+              as List<CameraDescription>,
       trimStart: null == trimStart
           ? _value.trimStart
           : trimStart // ignore: cast_nullable_to_non_nullable
@@ -104,10 +108,6 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
       trimPlaying: null == trimPlaying
           ? _value.trimPlaying
           : trimPlaying // ignore: cast_nullable_to_non_nullable
-              as bool,
-      trimIsProgressing: null == trimIsProgressing
-          ? _value.trimIsProgressing
-          : trimIsProgressing // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -127,10 +127,10 @@ abstract class _$$_ReelStateModelCopyWith<$Res>
       bool isCameraControllerInitialsed,
       bool isRecording,
       int cameraPosition,
+      List<CameraDescription> cameraList,
       double trimStart,
       double trimEndValue,
-      bool trimPlaying,
-      bool trimIsProgressing});
+      bool trimPlaying});
 }
 
 /// @nodoc
@@ -149,10 +149,10 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
     Object? isCameraControllerInitialsed = null,
     Object? isRecording = null,
     Object? cameraPosition = null,
+    Object? cameraList = null,
     Object? trimStart = null,
     Object? trimEndValue = null,
     Object? trimPlaying = null,
-    Object? trimIsProgressing = null,
   }) {
     return _then(_$_ReelStateModel(
       videoFile: freezed == videoFile
@@ -175,6 +175,10 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
           ? _value.cameraPosition
           : cameraPosition // ignore: cast_nullable_to_non_nullable
               as int,
+      cameraList: null == cameraList
+          ? _value._cameraList
+          : cameraList // ignore: cast_nullable_to_non_nullable
+              as List<CameraDescription>,
       trimStart: null == trimStart
           ? _value.trimStart
           : trimStart // ignore: cast_nullable_to_non_nullable
@@ -186,10 +190,6 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
       trimPlaying: null == trimPlaying
           ? _value.trimPlaying
           : trimPlaying // ignore: cast_nullable_to_non_nullable
-              as bool,
-      trimIsProgressing: null == trimIsProgressing
-          ? _value.trimIsProgressing
-          : trimIsProgressing // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -204,10 +204,11 @@ class _$_ReelStateModel implements _ReelStateModel {
       this.isCameraControllerInitialsed = false,
       this.isRecording = false,
       this.cameraPosition = 0,
+      final List<CameraDescription> cameraList = const [],
       this.trimStart = 0,
       this.trimEndValue = 15,
-      this.trimPlaying = false,
-      this.trimIsProgressing = false});
+      this.trimPlaying = false})
+      : _cameraList = cameraList;
 
   @override
   final File? videoFile;
@@ -223,6 +224,15 @@ class _$_ReelStateModel implements _ReelStateModel {
   @override
   @JsonKey()
   final int cameraPosition;
+  final List<CameraDescription> _cameraList;
+  @override
+  @JsonKey()
+  List<CameraDescription> get cameraList {
+    if (_cameraList is EqualUnmodifiableListView) return _cameraList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_cameraList);
+  }
+
   @override
   @JsonKey()
   final double trimStart;
@@ -232,13 +242,10 @@ class _$_ReelStateModel implements _ReelStateModel {
   @override
   @JsonKey()
   final bool trimPlaying;
-  @override
-  @JsonKey()
-  final bool trimIsProgressing;
 
   @override
   String toString() {
-    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraPosition: $cameraPosition, trimStart: $trimStart, trimEndValue: $trimEndValue, trimPlaying: $trimPlaying, trimIsProgressing: $trimIsProgressing)';
+    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraPosition: $cameraPosition, cameraList: $cameraList, trimStart: $trimStart, trimEndValue: $trimEndValue, trimPlaying: $trimPlaying)';
   }
 
   @override
@@ -258,14 +265,14 @@ class _$_ReelStateModel implements _ReelStateModel {
                 other.isRecording == isRecording) &&
             (identical(other.cameraPosition, cameraPosition) ||
                 other.cameraPosition == cameraPosition) &&
+            const DeepCollectionEquality()
+                .equals(other._cameraList, _cameraList) &&
             (identical(other.trimStart, trimStart) ||
                 other.trimStart == trimStart) &&
             (identical(other.trimEndValue, trimEndValue) ||
                 other.trimEndValue == trimEndValue) &&
             (identical(other.trimPlaying, trimPlaying) ||
-                other.trimPlaying == trimPlaying) &&
-            (identical(other.trimIsProgressing, trimIsProgressing) ||
-                other.trimIsProgressing == trimIsProgressing));
+                other.trimPlaying == trimPlaying));
   }
 
   @override
@@ -276,10 +283,10 @@ class _$_ReelStateModel implements _ReelStateModel {
       isCameraControllerInitialsed,
       isRecording,
       cameraPosition,
+      const DeepCollectionEquality().hash(_cameraList),
       trimStart,
       trimEndValue,
-      trimPlaying,
-      trimIsProgressing);
+      trimPlaying);
 
   @JsonKey(ignore: true)
   @override
@@ -295,10 +302,10 @@ abstract class _ReelStateModel implements ReelStateModel {
       final bool isCameraControllerInitialsed,
       final bool isRecording,
       final int cameraPosition,
+      final List<CameraDescription> cameraList,
       final double trimStart,
       final double trimEndValue,
-      final bool trimPlaying,
-      final bool trimIsProgressing}) = _$_ReelStateModel;
+      final bool trimPlaying}) = _$_ReelStateModel;
 
   @override
   File? get videoFile;
@@ -311,13 +318,13 @@ abstract class _ReelStateModel implements ReelStateModel {
   @override
   int get cameraPosition;
   @override
+  List<CameraDescription> get cameraList;
+  @override
   double get trimStart;
   @override
   double get trimEndValue;
   @override
   bool get trimPlaying;
-  @override
-  bool get trimIsProgressing;
   @override
   @JsonKey(ignore: true)
   _$$_ReelStateModelCopyWith<_$_ReelStateModel> get copyWith =>

@@ -10,7 +10,7 @@ import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons
 
 class ButtonBarIcons extends StatelessWidget {
   ButtonBarIcons({super.key, required this.cameraController});
-  final CameraController cameraController;
+  CameraController cameraController;
 
   final ReelCubit controller = Get.find<ReelCubit>();
 
@@ -28,6 +28,13 @@ class ButtonBarIcons extends StatelessWidget {
     controller.setRecordingAs(false);
     log(videoFile.path.toString());
     controller.setVideo(videoFile.path);
+  }
+
+  void switchCamera(int i) async {
+    cameraController = controller.switchCamera(i);
+    controller.setCameraAsInitialised(false);
+    await cameraController.initialize();
+    controller.setCameraAsInitialised(true);
   }
 
   @override
@@ -61,7 +68,7 @@ class ButtonBarIcons extends StatelessWidget {
               ),
               CameraPageIcons(
                 icon: Icons.flip_camera_android_outlined,
-                onTap: () {},
+                onTap: () => switchCamera(1),
                 color: Colors.black,
               ),
             ],

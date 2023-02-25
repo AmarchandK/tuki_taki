@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
+import 'package:get/route_manager.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
 import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
+import 'package:tuki_taki/modules/screens/reel/pages/video_filter_screen/video_filter_screen.dart';
 import 'package:video_player/video_player.dart';
 
 class ConfirmScreen extends StatefulWidget {
@@ -48,7 +50,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => const VideoFilterScreen());
+                      },
                       icon: const Icon(
                         Icons.filter,
                         color: Colors.white,

@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:camera/camera.dart';
+import 'package:camera/src/camera_controller.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
@@ -16,8 +18,16 @@ class ReelCubit extends Cubit<ReelStateModel> {
     }
   }
 
-  void setCameraAsInitialised() {
-    emit(state.copyWith(isCameraControllerInitialsed: true));
+  Future<void> getAvailableCameras() async {
+    final cameraList = await availableCameras();
+    emit(state.copyWith(cameraList: cameraList));
+  }
+
+  CameraController switchCamera(int i) =>
+      CameraController(state.cameraList[i], ResolutionPreset.medium);
+
+  void setCameraAsInitialised(bool status) {
+    emit(state.copyWith(isCameraControllerInitialsed: status));
   }
 
   void setRecordingAs(bool record) {
