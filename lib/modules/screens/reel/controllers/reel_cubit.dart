@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:camera/src/camera_controller.dart';
@@ -9,6 +10,17 @@ import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
 
 class ReelCubit extends Cubit<ReelStateModel> {
   ReelCubit() : super(ReelStateModel());
+  late CameraController cameraController;
+
+  Future<void> startCamera(int cameraPosition) async {
+    await getAvailableCameras();
+    if (state.cameraList.isNotEmpty) {
+      log('------------');
+      cameraController = switchCamera(cameraPosition);
+      await cameraController.initialize();
+      _setCameraAsInitialised(true);
+    }
+  }
 
   Future<void> pickVideo() async {
     final XFile? video =
@@ -26,7 +38,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
   CameraController switchCamera(int i) =>
       CameraController(state.cameraList[i], ResolutionPreset.medium);
 
-  void setCameraAsInitialised(bool status) {
+  void _setCameraAsInitialised(bool status) {
     emit(state.copyWith(isCameraControllerInitialsed: status));
   }
 
@@ -38,6 +50,15 @@ class ReelCubit extends Cubit<ReelStateModel> {
     final video = File(videoPath);
     emit(state.copyWith(videoFile: video));
     CustomRouting.replaceStackWithNamed(NamedRoutes.confirm.path);
+  }
+
+  timerStart(int satrt) async {
+    emit(state.copyWith(functionLoading: true));
+    for (num i = satrt; i >= -1; i--) {
+      await Future.delayed(const Duration(seconds: 1));
+      emit(state.copyWith(timer: i));
+    }
+    emit(state.copyWith(functionLoading: false));
   }
 
   ///////// trim fuctions /////////////

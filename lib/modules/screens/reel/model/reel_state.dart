@@ -16,5 +16,8 @@ class ReelStateModel with _$ReelStateModel {
     @Default(0) double trimStart,
     @Default(15) double trimEndValue,
     @Default(false) bool trimPlaying,
+    @Default(-1) num timer,
+    @Default(-1) num timeOut,
+    @Default(false) bool functionLoading,
   }) = _ReelStateModel;
 }
