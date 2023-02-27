@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/instance_manager.dart';
@@ -9,30 +6,18 @@ import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 
 class ButtonBarIcons extends StatelessWidget {
-  ButtonBarIcons({super.key});
+   ButtonBarIcons({super.key});
+
   final ReelCubit controller = Get.find<ReelCubit>();
 
   void _handleOnPress() {
-    controller.state.isRecording ? stopVideo() : takeVideo();
+    controller.state.isRecording
+        ? controller.stopVideo()
+        : controller.takeVideo();
   }
 
-  Future<void> takeVideo() async {
-    await controller. cameraController.startVideoRecording();
-    controller.setRecordingAs(true);
-  }
-
-  Future<void> stopVideo() async {
-    final XFile videoFile = await  controller. cameraController.stopVideoRecording();
-    controller.setRecordingAs(false);
-    log(videoFile.path.toString());
-    controller.setVideo(videoFile.path);
-  }
-
-  void switchCamera(int i) async {
-    // cameraController = controller.switchCamera(i);
-    // controller.setCameraAsInitialised(false);
-    // await cameraController.initialize();
-    // controller.setCameraAsInitialised(true);
+  void _switchCamera() {
+    controller.flipCamera(controller.state.initialCamera ? 1 : 0);
   }
 
   @override
@@ -66,7 +51,7 @@ class ButtonBarIcons extends StatelessWidget {
             ),
             CameraPageIcons(
               icon: Icons.flip_camera_android_outlined,
-              onTap: () => switchCamera(1),
+              onTap: _switchCamera,
               color: Colors.black,
             ),
           ],
