@@ -29,6 +29,7 @@ mixin _$ReelStateModel {
   num get timeOut => throw _privateConstructorUsedError;
   bool get functionLoading => throw _privateConstructorUsedError;
   bool get initialCamera => throw _privateConstructorUsedError;
+  bool get timerPressed => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ReelStateModelCopyWith<ReelStateModel> get copyWith =>
@@ -54,7 +55,8 @@ abstract class $ReelStateModelCopyWith<$Res> {
       num timer,
       num timeOut,
       bool functionLoading,
-      bool initialCamera});
+      bool initialCamera,
+      bool timerPressed});
 }
 
 /// @nodoc
@@ -83,6 +85,7 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
     Object? timeOut = null,
     Object? functionLoading = null,
     Object? initialCamera = null,
+    Object? timerPressed = null,
   }) {
     return _then(_value.copyWith(
       videoFile: freezed == videoFile
@@ -137,6 +140,10 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
           ? _value.initialCamera
           : initialCamera // ignore: cast_nullable_to_non_nullable
               as bool,
+      timerPressed: null == timerPressed
+          ? _value.timerPressed
+          : timerPressed // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -162,7 +169,8 @@ abstract class _$$_ReelStateModelCopyWith<$Res>
       num timer,
       num timeOut,
       bool functionLoading,
-      bool initialCamera});
+      bool initialCamera,
+      bool timerPressed});
 }
 
 /// @nodoc
@@ -189,6 +197,7 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
     Object? timeOut = null,
     Object? functionLoading = null,
     Object? initialCamera = null,
+    Object? timerPressed = null,
   }) {
     return _then(_$_ReelStateModel(
       videoFile: freezed == videoFile
@@ -243,6 +252,10 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
           ? _value.initialCamera
           : initialCamera // ignore: cast_nullable_to_non_nullable
               as bool,
+      timerPressed: null == timerPressed
+          ? _value.timerPressed
+          : timerPressed // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -263,7 +276,8 @@ class _$_ReelStateModel implements _ReelStateModel {
       this.timer = -1,
       this.timeOut = -1,
       this.functionLoading = false,
-      this.initialCamera = true})
+      this.initialCamera = true,
+      this.timerPressed = false})
       : _cameraList = cameraList;
 
   @override
@@ -310,10 +324,13 @@ class _$_ReelStateModel implements _ReelStateModel {
   @override
   @JsonKey()
   final bool initialCamera;
+  @override
+  @JsonKey()
+  final bool timerPressed;
 
   @override
   String toString() {
-    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraPosition: $cameraPosition, cameraList: $cameraList, trimStart: $trimStart, trimEndValue: $trimEndValue, trimPlaying: $trimPlaying, timer: $timer, timeOut: $timeOut, functionLoading: $functionLoading, initialCamera: $initialCamera)';
+    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraPosition: $cameraPosition, cameraList: $cameraList, trimStart: $trimStart, trimEndValue: $trimEndValue, trimPlaying: $trimPlaying, timer: $timer, timeOut: $timeOut, functionLoading: $functionLoading, initialCamera: $initialCamera, timerPressed: $timerPressed)';
   }
 
   @override
@@ -346,7 +363,9 @@ class _$_ReelStateModel implements _ReelStateModel {
             (identical(other.functionLoading, functionLoading) ||
                 other.functionLoading == functionLoading) &&
             (identical(other.initialCamera, initialCamera) ||
-                other.initialCamera == initialCamera));
+                other.initialCamera == initialCamera) &&
+            (identical(other.timerPressed, timerPressed) ||
+                other.timerPressed == timerPressed));
   }
 
   @override
@@ -364,7 +383,8 @@ class _$_ReelStateModel implements _ReelStateModel {
       timer,
       timeOut,
       functionLoading,
-      initialCamera);
+      initialCamera,
+      timerPressed);
 
   @JsonKey(ignore: true)
   @override
@@ -387,7 +407,8 @@ abstract class _ReelStateModel implements ReelStateModel {
       final num timer,
       final num timeOut,
       final bool functionLoading,
-      final bool initialCamera}) = _$_ReelStateModel;
+      final bool initialCamera,
+      final bool timerPressed}) = _$_ReelStateModel;
 
   @override
   File? get videoFile;
@@ -415,6 +436,8 @@ abstract class _ReelStateModel implements ReelStateModel {
   bool get functionLoading;
   @override
   bool get initialCamera;
+  @override
+  bool get timerPressed;
   @override
   @JsonKey(ignore: true)
   _$$_ReelStateModelCopyWith<_$_ReelStateModel> get copyWith =>

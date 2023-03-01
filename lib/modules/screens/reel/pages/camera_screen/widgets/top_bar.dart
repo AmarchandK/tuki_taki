@@ -25,7 +25,9 @@ class TopBarIcons extends StatelessWidget {
           CameraPageIcons(icon: Icons.flash_on_outlined, onTap: selectFlash),
           const Spacer(),
           Text(
-            controller.state.timeOut >= 0 ? "15 s" : '',
+            controller.state.timeOut >= 0
+                ? controller.state.timeOut.toString()
+                : '',
             style: const TextStyle(color: Colors.red, fontSize: 25),
           ),
           const Spacer(),

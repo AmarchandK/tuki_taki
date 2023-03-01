@@ -20,5 +20,6 @@ class ReelStateModel with _$ReelStateModel {
     @Default(-1) num timeOut,
     @Default(false) bool functionLoading,
     @Default(true) bool initialCamera,
+    @Default(false) bool timerPressed,
   }) = _ReelStateModel;
 }

@@ -61,10 +61,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                     IconButton(
                       onPressed: () =>
                           CustomRouting.pushNamed(NamedRoutes.trim.path),
-                      icon: const Icon(
-                        Icons.cut_outlined,
-                        color: Colors.white,
-                      ),
+                      icon: const Icon(Icons.cut_outlined, color: Colors.white),
                     ),
                     IconButton(
                       onPressed: () {

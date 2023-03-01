@@ -7,7 +7,11 @@ class RightBarIcons extends StatelessWidget {
   RightBarIcons({super.key});
   final ReelCubit controller = Get.find<ReelCubit>();
   void _onTimerPress() {
-    controller.state.functionLoading ? null : controller.timerStart(3);
+    controller.state.functionLoading ? null : controller.timerPressed();
+  }
+
+  void onTimOutPress() {
+    controller.timeOutCalled(15);
   }
 
   @override
@@ -21,7 +25,7 @@ class RightBarIcons extends StatelessWidget {
           CameraPageIcons(icon: Icons.music_note, onTap: () {}),
           CameraPageIcons(icon: Icons.movie_filter_outlined, onTap: () {}),
           CameraPageIcons(icon: Icons.timer_3_outlined, onTap: _onTimerPress),
-          CameraPageIcons(icon: Icons.timer_outlined, onTap: () {}),
+          CameraPageIcons(icon: Icons.timer_outlined, onTap: onTimOutPress),
           CameraPageIcons(icon: Icons.grid_view_outlined, onTap: () {}),
         ],
       ),

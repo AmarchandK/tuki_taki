@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,14 +11,12 @@ class ReelCubit extends Cubit<ReelStateModel> {
   late CameraController cameraController;
 
   Future<void> startCamera(int cameraPosition) async {
-    log(cameraPosition.toString());
     _setCameraAsInitialised(false);
     final List<CameraDescription> cameraList = await availableCameras();
     emit(state.copyWith(cameraList: cameraList));
     if (state.cameraList.isNotEmpty) {
       cameraController = CameraController(
-          state.cameraList[cameraPosition], ResolutionPreset.high);
-      log(cameraController.description.name.toString());
+          state.cameraList[cameraPosition], ResolutionPreset.medium);
       await cameraController.initialize();
       _setCameraAsInitialised(true);
     }
@@ -29,7 +26,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     await cameraController.setFlashMode(type);
   }
 
-  flipCamera(int position) {
+  void flipCamera(int position) {
     startCamera(position);
     emit(state.copyWith(initialCamera: !state.initialCamera));
   }
@@ -47,24 +44,41 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   void setVideo(String videoPath) {
-    log(videoPath);
     final video = File(videoPath);
     emit(state.copyWith(videoFile: video));
     CustomRouting.replaceStackWithNamed(NamedRoutes.confirm.path);
   }
 
-  timerStart(int satrt) async {
+  void timerPressed() {
+    emit(state.copyWith(timerPressed: true));
+  }
+
+  Future<void> timerStart(int satrt) async {
     emit(state.copyWith(functionLoading: true));
     for (num i = satrt; i >= -1; i--) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timer: i));
     }
     emit(state.copyWith(functionLoading: false));
+    emit(state.copyWith(timerPressed: false));
+  }
+
+  void timeOutCalled(num timeOutValue) async {
+    for (num i = 0; i <= timeOutValue; i++) {
+      await Future.delayed(const Duration(seconds: 1));
+      emit(state.copyWith(timeOut: i));
+    }
   }
 
   Future<void> takeVideo() async {
-    await cameraController.startVideoRecording();
-    emit(state.copyWith(isRecording: true));
+    if (state.timerPressed) {
+      await timerStart(3);
+      await cameraController.startVideoRecording();
+      emit(state.copyWith(isRecording: true));
+    } else {
+      await cameraController.startVideoRecording();
+      emit(state.copyWith(isRecording: true));
+    }
   }
 
   Future<void> stopVideo() async {
