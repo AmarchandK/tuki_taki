@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:tapioca/tapioca.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
 import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
@@ -44,8 +47,9 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   void setVideo(String videoPath) {
-    final video = File(videoPath);
+    final File video = File(videoPath);
     emit(state.copyWith(videoFile: video));
+    log('Confirm screen go');
     CustomRouting.replaceStackWithNamed(NamedRoutes.confirm.path);
   }
 
@@ -60,7 +64,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
       emit(state.copyWith(timer: i));
     }
     emit(state.copyWith(functionLoading: false));
-    emit(state.copyWith(timerPressed: false));
+    emit(state.copyWith(timerPressed: false)); 
   }
 
   void timeOutCalled(num timeOutValue) async {
@@ -93,4 +97,25 @@ class ReelCubit extends Cubit<ReelStateModel> {
 
   trimStartAsign(double value) => emit(state.copyWith(trimStart: value));
   trimEndAsign(double value) => emit(state.copyWith(trimEndValue: value));
+
+  //////////// add Filters //////////
+  Future<void> onFilterApply(List<TapiocaBall> tapiocaBalls) async {
+    log(" Filter apply");
+    Directory tempDir = await getTemporaryDirectory();
+    final String path = "${tempDir.path}/result.mp4";
+    // final XFile xFile = XFile(state.videoFile!.path);
+    final Cup cup = Cup(Content(state.videoFile!.path), tapiocaBalls);
+    log("saving");
+    try {
+      await cup.suckUp(path);
+      log("Video Setting");   
+      setVideo(path); 
+    } catch (e) {
+      log('------ exteption in try  ----------- $e');
+    }
+  }
+
+  void onFilterSave(String videoPath) {
+    setVideo(videoPath);
+  }
 }

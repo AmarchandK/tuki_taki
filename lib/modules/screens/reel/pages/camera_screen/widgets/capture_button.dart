@@ -6,7 +6,7 @@ import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 
 class ButtonBarIcons extends StatelessWidget {
-   ButtonBarIcons({super.key});
+  ButtonBarIcons({super.key});
 
   final ReelCubit controller = Get.find<ReelCubit>();
 
@@ -50,10 +50,9 @@ class ButtonBarIcons extends StatelessWidget {
               ),
             ),
             CameraPageIcons(
-              icon: Icons.flip_camera_android_outlined,
-              onTap: _switchCamera,
-              color: Colors.black,
-            ),
+                icon: Icons.flip_camera_android_outlined,
+                onTap: _switchCamera,
+                color: Colors.black),
           ],
         );
       },

@@ -10,7 +10,7 @@ class RightBarIcons extends StatelessWidget {
     controller.state.functionLoading ? null : controller.timerPressed();
   }
 
-  void onTimOutPress() {
+  void _onTimOutPress() {
     controller.timeOutCalled(15);
   }
 
@@ -23,10 +23,8 @@ class RightBarIcons extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           CameraPageIcons(icon: Icons.music_note, onTap: () {}),
-          CameraPageIcons(icon: Icons.movie_filter_outlined, onTap: () {}),
           CameraPageIcons(icon: Icons.timer_3_outlined, onTap: _onTimerPress),
-          CameraPageIcons(icon: Icons.timer_outlined, onTap: onTimOutPress),
-          CameraPageIcons(icon: Icons.grid_view_outlined, onTap: () {}),
+          CameraPageIcons(icon: Icons.timer_outlined, onTap: _onTimOutPress),
         ],
       ),
     );

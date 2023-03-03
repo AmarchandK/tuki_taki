@@ -22,9 +22,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     videoPlayerController =
         VideoPlayerController.file(controller.state.videoFile!);
     videoPlayerController.initialize();
-    videoPlayerController.play();
-    videoPlayerController.setVolume(1);
-    videoPlayerController.setLooping(true);
+    // videoPlayerController.play();
+    // videoPlayerController.setVolume(1);
+    // videoPlayerController.setLooping(true);
     super.initState();
   }
 
@@ -50,11 +50,10 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
-                      onPressed: () {
-                        Get.to(() => const VideoFilterScreen());
-                      },
+                      onPressed: () =>
+                          CustomRouting.pushNamed(NamedRoutes.filter.path),
                       icon: const Icon(
-                        Icons.filter,
+                        Icons.movie_filter_outlined,
                         color: Colors.white,
                       ),
                     ),

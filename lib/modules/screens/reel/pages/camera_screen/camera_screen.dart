@@ -75,11 +75,12 @@ class _CameraReelState extends State<CameraReel> {
                               child: DefaultTabController(
                                 length: 2,
                                 child: TabBar(
-                                    indicatorColor: Colors.transparent,
-                                    tabs: [
-                                      TukiTakiTabs(name: 'POST'),
-                                      TukiTakiTabs(name: 'REEL')
-                                    ]),
+                                  indicatorColor: Colors.transparent,
+                                  tabs: [
+                                    TukiTakiTabs(name: 'POST'),
+                                    TukiTakiTabs(name: 'REEL')
+                                  ],
+                                ),
                               ),
                             ),
                           ],
