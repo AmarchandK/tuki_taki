@@ -2,21 +2,17 @@ import 'package:flutter/material.dart';
 
 class CameraPageIcons extends StatelessWidget {
   const CameraPageIcons(
-      {super.key, required this.icon, required this.onTap, this.color});
-  final IconData icon;
+      {super.key, required this.iconString, required this.onTap});
+  final String iconString;
   final void Function() onTap;
-  final Color? color;
+
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onTap,
-      icon: Padding(
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Icon(
-          icon,
-          color: color ?? Colors.white,
-          size: 27,
-        ),
+        child: Image.asset(iconString, height: 30, width: 30, fit: BoxFit.fill),
       ),
     );
   }

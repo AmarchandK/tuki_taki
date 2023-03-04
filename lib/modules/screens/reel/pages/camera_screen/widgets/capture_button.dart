@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/instance_manager.dart';
+import 'package:tuki_taki/global/constants.dart';
 import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
 import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
@@ -29,9 +30,8 @@ class ButtonBarIcons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CameraPageIcons(
-                icon: Icons.image,
-                onTap: () => controller.pickVideo(),
-                color: Colors.black),
+                iconString: AppCustomIcons.fromGalley,
+                onTap: () => controller.pickVideo()),
             Container(
               height: 65,
               width: 65,
@@ -50,9 +50,8 @@ class ButtonBarIcons extends StatelessWidget {
               ),
             ),
             CameraPageIcons(
-                icon: Icons.flip_camera_android_outlined,
-                onTap: _switchCamera,
-                color: Colors.black),
+                iconString: AppCustomIcons.cameraSwap,
+                onTap: () => _switchCamera()),
           ],
         );
       },

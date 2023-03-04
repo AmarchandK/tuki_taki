@@ -1,6 +1,8 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
+import 'package:line_icons/line_icons.dart';
+import 'package:tuki_taki/global/constants.dart';
 import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 
@@ -22,7 +24,8 @@ class TopBarIcons extends StatelessWidget {
       child: Row(
         children: [
           const SizedBox(width: 10),
-          CameraPageIcons(icon: Icons.flash_on_outlined, onTap: selectFlash),
+          CameraPageIcons(
+              iconString: AppCustomIcons.flashOn, onTap: selectFlash),
           const Spacer(),
           Text(
             controller.state.timeOut >= 0
@@ -31,7 +34,7 @@ class TopBarIcons extends StatelessWidget {
             style: const TextStyle(color: Colors.red, fontSize: 25),
           ),
           const Spacer(),
-          CameraPageIcons(icon: Icons.close_outlined, onTap: () {}),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.close)),
           const SizedBox(width: 10),
         ],
       ),

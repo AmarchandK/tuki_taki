@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
-import 'package:get/route_manager.dart';
+import 'package:tuki_taki/global/constants.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
 import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
-import 'package:tuki_taki/modules/screens/reel/pages/video_filter_screen/video_filter_screen.dart';
+import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 import 'package:video_player/video_player.dart';
 
 class ConfirmScreen extends StatefulWidget {
@@ -31,7 +31,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   @override
   void dispose() {
     videoPlayerController.pause();
-    videoPlayerController.dispose();
+    videoPlayerController.dispose(); 
     super.dispose();
   }
 
@@ -49,25 +49,16 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      onPressed: () =>
+                    CameraPageIcons(
+                      iconString: AppCustomIcons.videoFilter,
+                      onTap: () =>
                           CustomRouting.pushNamed(NamedRoutes.filter.path),
-                      icon: const Icon(
-                        Icons.movie_filter_outlined,
-                        color: Colors.white,
-                      ),
                     ),
-                    IconButton(
-                      onPressed: () =>
-                          CustomRouting.pushNamed(NamedRoutes.trim.path),
-                      icon: const Icon(Icons.cut_outlined, color: Colors.white),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        videoPlayerController.setPlaybackSpeed(2);
-                      },
-                      icon: const Icon(Icons.speed, color: Colors.white),
-                    ),
+                    const SizedBox(height: 30),
+                    CameraPageIcons(
+                        iconString: AppCustomIcons.videoTrim,
+                        onTap: () =>
+                            CustomRouting.pushNamed(NamedRoutes.trim.path)),
                   ],
                 ))
           ],
