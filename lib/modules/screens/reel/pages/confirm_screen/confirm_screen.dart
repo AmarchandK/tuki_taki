@@ -28,7 +28,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     super.initState();
   }
 
-  @override
+  @override      
   void dispose() {
     videoPlayerController.pause();
     videoPlayerController.dispose(); 

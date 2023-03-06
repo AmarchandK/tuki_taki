@@ -18,8 +18,9 @@ class ReelStateModel with _$ReelStateModel {
     @Default(false) bool trimPlaying,
     @Default(-1) num timer,
     @Default(-1) num timeOut,
-    @Default(false) bool functionLoading,
     @Default(true) bool initialCamera,
-    @Default(false) bool timerPressed,
+    @Default(TimerState.noTimer)TimerState timerState ,
   }) = _ReelStateModel;
 }
+
+enum TimerState { noTimer, threeTimer, fiveTimer }

@@ -54,17 +54,31 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   void timerPressed() {
-    emit(state.copyWith(timerPressed: true));
+    if (state.timerState == TimerState.noTimer) {
+      emit(state.copyWith(timerState: TimerState.threeTimer));
+    } else if (state.timerState == TimerState.threeTimer) {
+      emit(state.copyWith(timerState: TimerState.fiveTimer));
+    } else {
+      emit(state.copyWith(timerState: TimerState.noTimer));
+    }
   }
 
-  Future<void> timerStart(int satrt) async {
-    emit(state.copyWith(functionLoading: true));
+  Future<void> timerStart() async {
+    int satrt = timerSelection();
     for (num i = satrt; i >= -1; i--) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timer: i));
     }
-    emit(state.copyWith(functionLoading: false));
-    emit(state.copyWith(timerPressed: false)); 
+  }
+
+  int timerSelection() {
+    if (state.timerState == TimerState.threeTimer) {
+      return 3;
+    } else if (state.timerState == TimerState.fiveTimer) {
+      return 5;
+    } else {
+      return 0;
+    }
   }
 
   void timeOutCalled(num timeOutValue) async {
@@ -75,14 +89,9 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   Future<void> takeVideo() async {
-    if (state.timerPressed) {
-      await timerStart(3);
-      await cameraController.startVideoRecording();
-      emit(state.copyWith(isRecording: true));
-    } else {
-      await cameraController.startVideoRecording();
-      emit(state.copyWith(isRecording: true));
-    }
+    await timerStart();
+    await cameraController.startVideoRecording();
+    emit(state.copyWith(isRecording: true));
   }
 
   Future<void> stopVideo() async {
@@ -108,8 +117,8 @@ class ReelCubit extends Cubit<ReelStateModel> {
     log("saving");
     try {
       await cup.suckUp(path);
-      log("Video Setting");   
-      setVideo(path); 
+      log("Video Setting");
+      setVideo(path);
     } catch (e) {
       log('------ exteption in try  ----------- $e');
     }
