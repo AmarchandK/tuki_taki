@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
     Get.put(globalKey);
     return GetMaterialApp(
       navigatorKey: globalKey,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -23,5 +24,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-

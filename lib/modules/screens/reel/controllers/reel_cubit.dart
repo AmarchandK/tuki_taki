@@ -124,7 +124,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     }
   }
 
-  void onFilterSave(String videoPath) {
-    setVideo(videoPath);
+  void filterAddLoading(bool load) {
+    emit(state.copyWith(filterLoading: load));
   }
 }

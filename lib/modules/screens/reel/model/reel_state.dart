@@ -20,6 +20,7 @@ class ReelStateModel with _$ReelStateModel {
     @Default(-1) num timeOut,
     @Default(true) bool initialCamera,
     @Default(TimerState.noTimer)TimerState timerState ,
+  @Default(false)  bool filterLoading,
   }) = _ReelStateModel;
 }
 

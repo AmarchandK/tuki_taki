@@ -11,9 +11,9 @@ class CameraPageIcons extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Image.asset(iconString, height: 30, width: 30, fit: BoxFit.fill),
-      ),
+          padding: const EdgeInsets.all(8.0),
+          child:
+              Image.asset(iconString, height: 30, width: 30, fit: BoxFit.fill)),
     );
   }
 }

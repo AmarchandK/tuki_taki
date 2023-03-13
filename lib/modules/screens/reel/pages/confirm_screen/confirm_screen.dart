@@ -19,50 +19,66 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
   final ReelCubit controller = Get.find<ReelCubit>();
   @override
   void initState() {
-    videoPlayerController =
-        VideoPlayerController.file(controller.state.videoFile!);
-    videoPlayerController.initialize();
-    // videoPlayerController.play();
-    // videoPlayerController.setVolume(1);
-    // videoPlayerController.setLooping(true);
+    videoPlayerInitialize();
     super.initState();
   }
 
-  @override      
+  void videoPlayerInitialize() {
+    videoPlayerController =
+        VideoPlayerController.file(controller.state.videoFile!);
+    videoPlayerController.initialize();
+    videoPlayerController.play();
+    videoPlayerController.setVolume(1);
+    videoPlayerController.setLooping(true);
+  }
+
+  @override
   void dispose() {
-    videoPlayerController.pause();
-    videoPlayerController.dispose(); 
+    videoPlayerController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Stack(
-          children: [
-            VideoPlayer(videoPlayerController),
-            Align(
-                alignment: Alignment.bottomRight,
+      body: Stack(
+        children: [
+          Center(
+            child: AspectRatio(
+                aspectRatio: videoPlayerController.value.aspectRatio,
+                child: VideoPlayer(videoPlayerController)),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: TextButton(onPressed: () {}, child: const Text("Done")),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(.8),
+                    borderRadius: BorderRadius.circular(5)),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CameraPageIcons(
                       iconString: AppCustomIcons.videoFilter,
                       onTap: () =>
                           CustomRouting.pushNamed(NamedRoutes.filter.path),
                     ),
-                    const SizedBox(height: 30),
+                    const Text("Filters",
+                        style: TextStyle(color: Colors.white)),
+                    const SizedBox(height: 20),
                     CameraPageIcons(
                         iconString: AppCustomIcons.videoTrim,
                         onTap: () =>
                             CustomRouting.pushNamed(NamedRoutes.trim.path)),
+                    const Text("Trim", style: TextStyle(color: Colors.white)),
                   ],
-                ))
-          ],
-        ),
+                )),
+          )
+        ],
       ),
     );
   }

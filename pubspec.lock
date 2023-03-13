@@ -760,10 +760,11 @@ packages:
   tapioca:
     dependency: "direct main"
     description:
-      name: tapioca
-      sha256: a84a2305fdcba3ed9cedb7fd16211a8300a2722718b242d77c06a3aea671bc90
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "9ff9a6e7b3bdc8113291f0ca929217d5f9b98a3e"
+      url: "https://github.com/AmarchandK/tapioca"
+    source: git
     version: "1.0.6+1"
   term_glyph:
     dependency: transitive
