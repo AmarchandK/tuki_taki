@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/instance_manager.dart';
@@ -29,7 +31,10 @@ class _TrimVedoPageState extends State<TrimVedoPage> {
     await trimmer.saveTrimmedVideo(
         startValue: controller.state.trimStart,
         endValue: controller.state.trimStart,
-        onSave: (outputPath) => controller.setVideo(outputPath!));
+        onSave: (outputPath) {
+          log(outputPath.toString());
+          controller.setVideo(outputPath??"");
+        });
   }
 
   @override

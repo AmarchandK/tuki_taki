@@ -16,11 +16,13 @@ class ReelStateModel with _$ReelStateModel {
     @Default(0) double trimStart,
     @Default(15) double trimEndValue,
     @Default(false) bool trimPlaying,
-    @Default(-1) num timer,
-    @Default(-1) num timeOut,
+    @Default(0) int timer,
+    @Default(0) int timeOut,
     @Default(true) bool initialCamera,
     @Default(TimerState.noTimer)TimerState timerState ,
   @Default(false)  bool filterLoading,
+   @Default(false) bool isMerged,
+    @Default(false) bool isMergingFiles,
   }) = _ReelStateModel;
 }
 

@@ -65,7 +65,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
 
   Future<void> timerStart() async {
     int satrt = timerSelection();
-    for (num i = satrt; i >= -1; i--) {
+    for (int i = satrt; i >= -1; i--) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timer: i));
     }
@@ -81,8 +81,8 @@ class ReelCubit extends Cubit<ReelStateModel> {
     }
   }
 
-  void timeOutCalled(num timeOutValue) async {
-    for (num i = 0; i <= timeOutValue; i++) {
+  void timeOutCalled(int timeOutValue) async {
+    for (int i = 0; i <= timeOutValue; i++) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timeOut: i));
     }

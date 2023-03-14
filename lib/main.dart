@@ -17,9 +17,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       navigatorKey: globalKey,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       getPages: allRoutes,
     );
   }

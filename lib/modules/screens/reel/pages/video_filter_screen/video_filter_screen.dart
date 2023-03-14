@@ -22,6 +22,7 @@ class _VideoFilterScreenState extends State<VideoFilterScreen> {
   final ReelCubit controller = Get.find<ReelCubit>();
   late VideoPlayerController videoPlayerController;
   final List<List<TapiocaBall>> tapiocaBalls = [
+    [TapiocaBall.filter(Filters.transparent, 0.01)],
     [TapiocaBall.filter(Filters.pink, 0.2)],
     [TapiocaBall.filter(Filters.white, 0.2)],
     [TapiocaBall.filter(Filters.blue, 0.2)],
@@ -34,12 +35,13 @@ class _VideoFilterScreenState extends State<VideoFilterScreen> {
     [TapiocaBall.filter(Filters.violet, 0.2)]
   ];
   final Map<String, Color> filters = {
+    "orginal": const Color(0x00000000),
     "pink": const Color(0xffffc0cb),
     "white": const Color(0xffffffff),
     "blue": const Color(0xff1f8eed),
     "red": const Color(0xffff969f),
     "orange": const Color(0xffffd5c0),
-    "cyan": const Color(0xffffd5c0),
+    "cyan": const Color(0xffc0ffff),
     "green": const Color(0xffc6fac5),
     "golden": const Color(0xfffeffc0),
     "brown": const Color(0xff5c3e13),
@@ -67,9 +69,9 @@ class _VideoFilterScreenState extends State<VideoFilterScreen> {
     videoPlayerController =
         VideoPlayerController.file(controller.state.videoFile!);
     videoPlayerController.initialize();
-    videoPlayerController.play();
-    videoPlayerController.setVolume(1);
-    videoPlayerController.setLooping(true);
+    // videoPlayerController.play();
+    // videoPlayerController.setVolume(1);
+    // videoPlayerController.setLooping(true);
   }
 
   void onFilterApply(int index) {
@@ -136,9 +138,8 @@ class _VideoFilterScreenState extends State<VideoFilterScreen> {
                           children: [
                             VideoPlayer(videoPlayerController),
                             Container(
-                                color: color,
-                                width: double.infinity,
-                                height: double.infinity),
+                              color: color,
+                            ),
                           ],
                         ),
                       )),

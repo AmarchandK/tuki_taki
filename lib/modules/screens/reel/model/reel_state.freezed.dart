@@ -25,11 +25,13 @@ mixin _$ReelStateModel {
   double get trimStart => throw _privateConstructorUsedError;
   double get trimEndValue => throw _privateConstructorUsedError;
   bool get trimPlaying => throw _privateConstructorUsedError;
-  num get timer => throw _privateConstructorUsedError;
-  num get timeOut => throw _privateConstructorUsedError;
+  int get timer => throw _privateConstructorUsedError;
+  int get timeOut => throw _privateConstructorUsedError;
   bool get initialCamera => throw _privateConstructorUsedError;
   TimerState get timerState => throw _privateConstructorUsedError;
   bool get filterLoading => throw _privateConstructorUsedError;
+  bool get isMerged => throw _privateConstructorUsedError;
+  bool get isMergingFiles => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ReelStateModelCopyWith<ReelStateModel> get copyWith =>
@@ -52,11 +54,13 @@ abstract class $ReelStateModelCopyWith<$Res> {
       double trimStart,
       double trimEndValue,
       bool trimPlaying,
-      num timer,
-      num timeOut,
+      int timer,
+      int timeOut,
       bool initialCamera,
       TimerState timerState,
-      bool filterLoading});
+      bool filterLoading,
+      bool isMerged,
+      bool isMergingFiles});
 }
 
 /// @nodoc
@@ -86,6 +90,8 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
     Object? initialCamera = null,
     Object? timerState = null,
     Object? filterLoading = null,
+    Object? isMerged = null,
+    Object? isMergingFiles = null,
   }) {
     return _then(_value.copyWith(
       videoFile: freezed == videoFile
@@ -127,11 +133,11 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
       timer: null == timer
           ? _value.timer
           : timer // ignore: cast_nullable_to_non_nullable
-              as num,
+              as int,
       timeOut: null == timeOut
           ? _value.timeOut
           : timeOut // ignore: cast_nullable_to_non_nullable
-              as num,
+              as int,
       initialCamera: null == initialCamera
           ? _value.initialCamera
           : initialCamera // ignore: cast_nullable_to_non_nullable
@@ -143,6 +149,14 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
       filterLoading: null == filterLoading
           ? _value.filterLoading
           : filterLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isMerged: null == isMerged
+          ? _value.isMerged
+          : isMerged // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isMergingFiles: null == isMergingFiles
+          ? _value.isMergingFiles
+          : isMergingFiles // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -166,11 +180,13 @@ abstract class _$$_ReelStateModelCopyWith<$Res>
       double trimStart,
       double trimEndValue,
       bool trimPlaying,
-      num timer,
-      num timeOut,
+      int timer,
+      int timeOut,
       bool initialCamera,
       TimerState timerState,
-      bool filterLoading});
+      bool filterLoading,
+      bool isMerged,
+      bool isMergingFiles});
 }
 
 /// @nodoc
@@ -198,6 +214,8 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
     Object? initialCamera = null,
     Object? timerState = null,
     Object? filterLoading = null,
+    Object? isMerged = null,
+    Object? isMergingFiles = null,
   }) {
     return _then(_$_ReelStateModel(
       videoFile: freezed == videoFile
@@ -239,11 +257,11 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
       timer: null == timer
           ? _value.timer
           : timer // ignore: cast_nullable_to_non_nullable
-              as num,
+              as int,
       timeOut: null == timeOut
           ? _value.timeOut
           : timeOut // ignore: cast_nullable_to_non_nullable
-              as num,
+              as int,
       initialCamera: null == initialCamera
           ? _value.initialCamera
           : initialCamera // ignore: cast_nullable_to_non_nullable
@@ -255,6 +273,14 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
       filterLoading: null == filterLoading
           ? _value.filterLoading
           : filterLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isMerged: null == isMerged
+          ? _value.isMerged
+          : isMerged // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isMergingFiles: null == isMergingFiles
+          ? _value.isMergingFiles
+          : isMergingFiles // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -273,11 +299,13 @@ class _$_ReelStateModel implements _ReelStateModel {
       this.trimStart = 0,
       this.trimEndValue = 15,
       this.trimPlaying = false,
-      this.timer = -1,
-      this.timeOut = -1,
+      this.timer = 0,
+      this.timeOut = 0,
       this.initialCamera = true,
       this.timerState = TimerState.noTimer,
-      this.filterLoading = false})
+      this.filterLoading = false,
+      this.isMerged = false,
+      this.isMergingFiles = false})
       : _cameraList = cameraList;
 
   @override
@@ -314,10 +342,10 @@ class _$_ReelStateModel implements _ReelStateModel {
   final bool trimPlaying;
   @override
   @JsonKey()
-  final num timer;
+  final int timer;
   @override
   @JsonKey()
-  final num timeOut;
+  final int timeOut;
   @override
   @JsonKey()
   final bool initialCamera;
@@ -327,10 +355,16 @@ class _$_ReelStateModel implements _ReelStateModel {
   @override
   @JsonKey()
   final bool filterLoading;
+  @override
+  @JsonKey()
+  final bool isMerged;
+  @override
+  @JsonKey()
+  final bool isMergingFiles;
 
   @override
   String toString() {
-    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraPosition: $cameraPosition, cameraList: $cameraList, trimStart: $trimStart, trimEndValue: $trimEndValue, trimPlaying: $trimPlaying, timer: $timer, timeOut: $timeOut, initialCamera: $initialCamera, timerState: $timerState, filterLoading: $filterLoading)';
+    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraPosition: $cameraPosition, cameraList: $cameraList, trimStart: $trimStart, trimEndValue: $trimEndValue, trimPlaying: $trimPlaying, timer: $timer, timeOut: $timeOut, initialCamera: $initialCamera, timerState: $timerState, filterLoading: $filterLoading, isMerged: $isMerged, isMergingFiles: $isMergingFiles)';
   }
 
   @override
@@ -365,7 +399,11 @@ class _$_ReelStateModel implements _ReelStateModel {
             (identical(other.timerState, timerState) ||
                 other.timerState == timerState) &&
             (identical(other.filterLoading, filterLoading) ||
-                other.filterLoading == filterLoading));
+                other.filterLoading == filterLoading) &&
+            (identical(other.isMerged, isMerged) ||
+                other.isMerged == isMerged) &&
+            (identical(other.isMergingFiles, isMergingFiles) ||
+                other.isMergingFiles == isMergingFiles));
   }
 
   @override
@@ -384,7 +422,9 @@ class _$_ReelStateModel implements _ReelStateModel {
       timeOut,
       initialCamera,
       timerState,
-      filterLoading);
+      filterLoading,
+      isMerged,
+      isMergingFiles);
 
   @JsonKey(ignore: true)
   @override
@@ -404,11 +444,13 @@ abstract class _ReelStateModel implements ReelStateModel {
       final double trimStart,
       final double trimEndValue,
       final bool trimPlaying,
-      final num timer,
-      final num timeOut,
+      final int timer,
+      final int timeOut,
       final bool initialCamera,
       final TimerState timerState,
-      final bool filterLoading}) = _$_ReelStateModel;
+      final bool filterLoading,
+      final bool isMerged,
+      final bool isMergingFiles}) = _$_ReelStateModel;
 
   @override
   File? get videoFile;
@@ -429,15 +471,19 @@ abstract class _ReelStateModel implements ReelStateModel {
   @override
   bool get trimPlaying;
   @override
-  num get timer;
+  int get timer;
   @override
-  num get timeOut;
+  int get timeOut;
   @override
   bool get initialCamera;
   @override
   TimerState get timerState;
   @override
   bool get filterLoading;
+  @override
+  bool get isMerged;
+  @override
+  bool get isMergingFiles;
   @override
   @JsonKey(ignore: true)
   _$$_ReelStateModelCopyWith<_$_ReelStateModel> get copyWith =>

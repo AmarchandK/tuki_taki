@@ -10,18 +10,6 @@ class RightBarIcons extends StatelessWidget {
   RightBarIcons({super.key});
   final ReelCubit controller = Get.find<ReelCubit>();
 
-  void _onTimOutPress() {
-    controller.timeOutCalled(15);
-  }
-
-  String iconSelection() {
-    return controller.state.timerState == TimerState.noTimer
-        ? AppCustomIcons.timer
-        : controller.state.timerState == TimerState.threeTimer
-            ? AppCustomIcons.timer3s
-            : AppCustomIcons.timer5s;
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReelCubit, ReelStateModel>(
@@ -33,11 +21,8 @@ class RightBarIcons extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              CameraPageIcons(iconString: AppCustomIcons.songAdd, onTap: () {}),
-              const SizedBox(height: 30),
-              CameraPageIcons(
-                  iconString: iconSelection(),
-                  onTap: () => controller.timerPressed()),
+           
+            
             ],
           ),
         );

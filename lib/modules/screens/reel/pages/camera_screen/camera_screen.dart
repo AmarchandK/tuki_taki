@@ -51,7 +51,7 @@ class _CameraReelState extends State<CameraReel> {
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
-                                controller.state.timer >= 0
+                                controller.state.timer >= 1
                                     ? Align(
                                         child: Text(
                                           controller.state.timer.toString(),
@@ -63,6 +63,12 @@ class _CameraReelState extends State<CameraReel> {
                                     : const SizedBox(),
                                 TopBarIcons(),
                                 RightBarIcons(),
+                                 Text(
+            controller.state.timeOut >= 0
+                ? controller.state.timeOut.toString()
+                : '',
+            style: const TextStyle(color: Colors.red, fontSize: 25),
+          ),
                               ],
                             ),
                           ),
