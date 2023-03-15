@@ -37,7 +37,9 @@ class ButtonBarIcons extends StatelessWidget {
               width: 65,
               padding: const EdgeInsets.all(5),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.red, width: 3),
+                border: Border.all(
+                    color: state.isRecording ? Colors.transparent : Colors.red,
+                    width: 3),
                 borderRadius: BorderRadius.circular(50),
               ),
               child: RawMaterialButton(
@@ -45,7 +47,7 @@ class ButtonBarIcons extends StatelessWidget {
                 fillColor: Colors.red,
                 shape: state.isRecording
                     ? RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5))
+                        borderRadius: BorderRadius.circular(3))
                     : const CircleBorder(),
               ),
             ),

@@ -27,12 +27,6 @@ class _CameraReelState extends State<CameraReel> {
   }
 
   @override
-  void dispose() {
-    controller.cameraController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocBuilder<ReelCubit, ReelStateModel>(
@@ -41,11 +35,10 @@ class _CameraReelState extends State<CameraReel> {
             return Scaffold(
               body: state.isCameraControllerInitialsed
                   ? Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          width: double.infinity,
-                          height: MediaQuery.of(context).size.height - 160,
+                        TopBarIcons(),
+                        AspectRatio(
+                          aspectRatio: 3 / 4,
                           child: CameraPreview(
                             controller.cameraController,
                             child: Stack(
@@ -61,18 +54,22 @@ class _CameraReelState extends State<CameraReel> {
                                         ),
                                       )
                                     : const SizedBox(),
-                                TopBarIcons(),
                                 RightBarIcons(),
-                                 Text(
-            controller.state.timeOut >= 0
-                ? controller.state.timeOut.toString()
-                : '',
-            style: const TextStyle(color: Colors.red, fontSize: 25),
-          ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Text(
+                                    controller.state.timeOut > 0
+                                        ? controller.state.timeOut.toString()
+                                        : '',
+                                    style: const TextStyle(
+                                        color: Colors.red, fontSize: 25),
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ),
+                        const SizedBox(height: 40),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: const [
@@ -91,6 +88,7 @@ class _CameraReelState extends State<CameraReel> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 20),
                         ButtonBarIcons(),
                         const SizedBox(height: 10)
                       ],

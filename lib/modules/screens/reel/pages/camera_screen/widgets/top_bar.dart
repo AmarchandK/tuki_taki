@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/instance_manager.dart';
 import 'package:tuki_taki/global/constants.dart';
 import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
@@ -18,7 +19,7 @@ class TopBarIcons extends StatelessWidget {
   }
 
   void _onTimOutPress() {
-    controller.timeOutCalled(15);
+    controller.timeOutCalled(30);
   }
 
   String iconSelection() {
@@ -33,19 +34,32 @@ class TopBarIcons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topCenter,
-      child: Row(
-        children: [
-          const SizedBox(width: 10),
-          CameraPageIcons(
-              iconString: AppCustomIcons.flashOn, onTap: selectFlash),
-          const Spacer(),
-            CameraPageIcons(
-                  iconString: iconSelection(),
-                  onTap: () => controller.timerPressed()),
-          const Spacer(),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.close)),
-          const SizedBox(width: 10),
-        ],
+      child: BlocBuilder<ReelCubit, ReelStateModel>(
+        bloc: controller,
+        builder: (context, state) {
+          return Container(
+            color: Colors.black,
+            child: Row(
+              children: [
+                const SizedBox(width: 10),
+                CameraPageIcons(
+                    iconString: AppCustomIcons.flashOn, onTap: selectFlash),
+                const Spacer(),
+                CameraPageIcons(
+                    iconString: iconSelection(),
+                    onTap: () => controller.timerPressed()),
+                const Spacer(),
+                IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.close,
+                      color: Colors.white,
+                      size: 30,
+                    )),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

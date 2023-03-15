@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:camera/camera.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,11 +10,12 @@ import 'package:tapioca/tapioca.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
 import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
+import 'package:video_compress/video_compress.dart';
 
 class ReelCubit extends Cubit<ReelStateModel> {
   ReelCubit() : super(ReelStateModel());
+////////////// Camera Functionalities //////////////////
   late CameraController cameraController;
-
   Future<void> startCamera(int cameraPosition) async {
     _setCameraAsInitialised(false);
     final List<CameraDescription> cameraList = await availableCameras();
@@ -34,6 +37,16 @@ class ReelCubit extends Cubit<ReelStateModel> {
     emit(state.copyWith(initialCamera: !state.initialCamera));
   }
 
+  void timerPressed() {
+    if (state.timerState == TimerState.noTimer) {
+      emit(state.copyWith(timerState: TimerState.threeTimer));
+    } else if (state.timerState == TimerState.threeTimer) {
+      emit(state.copyWith(timerState: TimerState.fiveTimer));
+    } else {
+      emit(state.copyWith(timerState: TimerState.noTimer));
+    }
+  }
+
   Future<void> pickVideo() async {
     final XFile? video =
         await ImagePicker().pickVideo(source: ImageSource.gallery);
@@ -49,23 +62,12 @@ class ReelCubit extends Cubit<ReelStateModel> {
   void setVideo(String videoPath) {
     final File video = File(videoPath);
     emit(state.copyWith(videoFile: video));
-    log('Confirm screen go');
     CustomRouting.replaceStackWithNamed(NamedRoutes.confirm.path);
-  }
-
-  void timerPressed() {
-    if (state.timerState == TimerState.noTimer) {
-      emit(state.copyWith(timerState: TimerState.threeTimer));
-    } else if (state.timerState == TimerState.threeTimer) {
-      emit(state.copyWith(timerState: TimerState.fiveTimer));
-    } else {
-      emit(state.copyWith(timerState: TimerState.noTimer));
-    }
   }
 
   Future<void> timerStart() async {
     int satrt = timerSelection();
-    for (int i = satrt; i >= -1; i--) {
+    for (int i = satrt; i >= 0; i--) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timer: i));
     }
@@ -90,13 +92,17 @@ class ReelCubit extends Cubit<ReelStateModel> {
 
   Future<void> takeVideo() async {
     await timerStart();
-    await cameraController.startVideoRecording();
     emit(state.copyWith(isRecording: true));
+    await cameraController.startVideoRecording();
   }
 
   Future<void> stopVideo() async {
     final XFile videoFile = await cameraController.stopVideoRecording();
-    emit(state.copyWith(isRecording: false));
+    emit(state.copyWith(
+        isRecording: false,
+        timeOut: 0,
+        timer: 0,
+        timerState: TimerState.noTimer));
     setVideo(videoFile.path);
   }
 
@@ -107,24 +113,74 @@ class ReelCubit extends Cubit<ReelStateModel> {
   trimStartAsign(double value) => emit(state.copyWith(trimStart: value));
   trimEndAsign(double value) => emit(state.copyWith(trimEndValue: value));
 
-  //////////// add Filters //////////
-  Future<void> onFilterApply(List<TapiocaBall> tapiocaBalls) async {
-    log(" Filter apply");
-    Directory tempDir = await getTemporaryDirectory();
-    final String path = "${tempDir.path}/result.mp4";
-    // final XFile xFile = XFile(state.videoFile!.path);
-    final Cup cup = Cup(Content(state.videoFile!.path), tapiocaBalls);
-    log("saving");
-    try {
-      await cup.suckUp(path);
-      log("Video Setting");
-      setVideo(path);
-    } catch (e) {
-      log('------ exteption in try  ----------- $e');
-    }
-  }
-
+  ////////////  Filters functions //////////
   void filterAddLoading(bool load) {
     emit(state.copyWith(filterLoading: load));
+  }
+
+  ///////////// Audio Merge with audio /////////////////
+  String audioPathUrl =
+      'https://firebasestorage.googleapis.com/v0/b/beworld-7c16c.appspot.com/o/tukitakisongs%2FTogether.mp3?alt=media&token=9e103c27-ef01-40db-a9a2-c5f59d1d15bf';
+  File? audioFile;
+  File? outputFile;
+
+  Future<void> mergeVideoAndAudio() async {
+    audioFile = File(audioPathUrl);
+    String videoPath = state.videoFile!.path;
+    emit(state.copyWith(isMergingFiles: true));
+    Directory tempDirectory = await getTemporaryDirectory();
+    String outputPath = '${tempDirectory.path}/output.mp4';
+    //clear the output file before merging
+    File outputFile = File(outputPath);
+    if (outputFile.existsSync()) {
+      outputFile.deleteSync();
+    }
+    String command =
+        '-i $videoPath -i ${audioFile!.path}  -c copy -map 0:v:0 -map 1:a:0 $outputPath';
+
+    FFmpegKit.execute(command).then((session) async {
+      ReturnCode? returnCode = await session.getReturnCode();
+      if (returnCode == null) {
+        log('Session was cancelled');
+        return;
+      } else {
+        log("returnCode###############          :${returnCode.getValue()}");
+        bool value = ReturnCode.isSuccess(returnCode);
+        if (value) {
+          log('Session completed successfully');
+          // final String compressedPath = await compressVideo(outputPath);
+          setVideo(outputPath);
+          emit(state.copyWith(isMergingFiles: false, isMerged: true));
+        } else {
+          bool isCancel = ReturnCode.isCancel(returnCode);
+          emit(state.copyWith(isMergingFiles: false));
+          if (isCancel) {
+            // Session was cancelled
+            log('Session was cancelled');
+            emit(
+              state.copyWith(isMergingFiles: false),
+            );
+          } else {
+            // Session failed
+            log('Session failed');
+            //log session output
+            String? output = await session.getAllLogsAsString();
+            log("output--------------:$output");
+            emit(state.copyWith(isMergingFiles: false));
+          }
+        }
+      }
+    });
+  }
+
+  /////////////// video compress //////////////////////
+  Future<String> compressVideo(String path) async {
+    MediaInfo? mediaInfo = await VideoCompress.compressVideo(path,
+        quality: VideoQuality.LowQuality,
+        startTime: 0,
+        duration: 30,
+        includeAudio: true);
+    log("compressed");
+    return mediaInfo!.path!;
   }
 }

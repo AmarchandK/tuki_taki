@@ -27,13 +27,14 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     videoPlayerController =
         VideoPlayerController.file(controller.state.videoFile!);
     videoPlayerController.initialize();
-    // videoPlayerController.play();
-    // videoPlayerController.setVolume(1);
-    // videoPlayerController.setLooping(true);
+    videoPlayerController.play();
+    videoPlayerController.setVolume(1);
+    videoPlayerController.setLooping(true);
   }
 
   @override
   void dispose() {
+    videoPlayerController.pause();
     videoPlayerController.dispose();
     super.dispose();
   }
@@ -45,8 +46,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
         children: [
           Center(
             child: AspectRatio(
-                aspectRatio: videoPlayerController.value.aspectRatio,
-                child: VideoPlayer(videoPlayerController)),
+              aspectRatio: videoPlayerController.value.aspectRatio,
+              child: VideoPlayer(videoPlayerController),
+            ),
           ),
           Align(
             alignment: Alignment.topRight,
@@ -55,39 +57,38 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
           Align(
             alignment: Alignment.centerRight,
             child: Container(
-                margin: const EdgeInsets.only(right: 8),
-                decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(.7),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CameraPageIcons(
-                        iconString: AppCustomIcons.songAdd, onTap: () {}),
-                    const Text("Audio", style: TextStyle(color: Colors.white)),
-                    const SizedBox(height: 10),
-                    CameraPageIcons(
+              margin: const EdgeInsets.only(right: 8),
+              decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(.7),
+                  borderRadius: BorderRadius.circular(5)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CameraPageIcons(
+                    iconString: AppCustomIcons.songAdd,
+                    onTap: () => controller.mergeVideoAndAudio(),
+                  ),
+                  const Text("Audio", style: TextStyle(color: Colors.white)),
+                  const SizedBox(height: 10),
+                  CameraPageIcons(
                       iconString: AppCustomIcons.videoFilter,
                       onTap: () =>
-                          CustomRouting.pushNamed(NamedRoutes.filter.path),
-                    ),
-                    const Text("Filters",
-                        style: TextStyle(color: Colors.white)),
-                    const SizedBox(height: 10),
-                    CameraPageIcons(
-                        iconString: AppCustomIcons.videoTrim,
-                        onTap: () =>
-                            CustomRouting.pushNamed(NamedRoutes.trim.path)),
-                    const Text("Trim", style: TextStyle(color: Colors.white)),
-                    const SizedBox(height: 10),
-                  ],
-                )),
+                          CustomRouting.pushNamed(NamedRoutes.filter.path)),
+                  const Text("Filters", style: TextStyle(color: Colors.white)),
+                  const SizedBox(height: 10),
+                  CameraPageIcons(
+                      iconString: AppCustomIcons.videoTrim,
+                      onTap: () =>
+                          CustomRouting.pushNamed(NamedRoutes.trim.path)),
+                  const Text("Trim", style: TextStyle(color: Colors.white)),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
           )
         ],
       ),
     );
   }
 }
-
-/////////////////////////////////////////////////////////
