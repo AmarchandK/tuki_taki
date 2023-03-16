@@ -23,6 +23,13 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    videoPlayerController.pause();
+    videoPlayerController.dispose();
+    super.dispose();
+  }
+
   void videoPlayerInitialize() {
     videoPlayerController =
         VideoPlayerController.file(controller.state.videoFile!);
@@ -32,11 +39,9 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     videoPlayerController.setLooping(true);
   }
 
-  @override
-  void dispose() {
-    videoPlayerController.pause();
-    videoPlayerController.dispose();
-    super.dispose();
+  void _increaseSpeed() {
+    videoPlayerController.setPlaybackSpeed(2);
+    controller.increaseSpeed();   
   }
 
   @override
@@ -83,6 +88,12 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           CustomRouting.pushNamed(NamedRoutes.trim.path)),
                   const Text("Trim", style: TextStyle(color: Colors.white)),
                   const SizedBox(height: 10),
+                  IconButton(
+                      onPressed: _increaseSpeed,
+                      icon: const Icon(
+                        Icons.fast_forward,
+                        color: Colors.white,
+                      )),
                 ],
               ),
             ),

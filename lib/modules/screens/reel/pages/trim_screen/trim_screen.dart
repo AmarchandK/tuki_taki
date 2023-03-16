@@ -30,16 +30,14 @@ class _TrimVedoPageState extends State<TrimVedoPage> {
   void saveVideo() async {
     await trimmer.saveTrimmedVideo(
         startValue: controller.state.trimStart,
-        endValue: controller.state.trimStart,
-        onSave: (outputPath) {
-          log(outputPath.toString());
-          controller.setVideo(outputPath??"");
-        });
+        endValue: controller.state.trimEndValue,
+        onSave: (outputPath) => controller.setVideo(videoPath:outputPath ?? ""));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: SafeArea(
         child: BlocBuilder<ReelCubit, ReelStateModel>(
             bloc: controller,
@@ -54,7 +52,7 @@ class _TrimVedoPageState extends State<TrimVedoPage> {
                       trimmer: trimmer,
                       viewerHeight: 50.0,
                       viewerWidth: MediaQuery.of(context).size.width,
-                      maxVideoLength: const Duration(seconds: 60),
+                      maxVideoLength: const Duration(seconds: 30),
                       onChangeStart: (value) =>
                           controller.trimStartAsign(value),
                       onChangeEnd: (value) => controller.trimEndAsign(value),

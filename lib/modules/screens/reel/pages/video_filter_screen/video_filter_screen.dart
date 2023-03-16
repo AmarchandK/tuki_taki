@@ -101,7 +101,7 @@ class _VideoFilterScreenState extends State<VideoFilterScreen> {
         Content(controller.state.videoFile!.path), tapiocaBalls[filterIndex]);
     await cup.suckUp(path);
     setState(() => processPercentage = 0);
-    controller.setVideo(path);
+    controller.setVideo(videoPath:path);
     controller.filterAddLoading(false);
   }
 

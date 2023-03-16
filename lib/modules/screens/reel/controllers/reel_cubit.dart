@@ -51,7 +51,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     final XFile? video =
         await ImagePicker().pickVideo(source: ImageSource.gallery);
     if (video != null) {
-      setVideo(video.path);
+      setVideo(videoPath: video.path);
     }
   }
 
@@ -59,10 +59,12 @@ class ReelCubit extends Cubit<ReelStateModel> {
     emit(state.copyWith(isCameraControllerInitialsed: status));
   }
 
-  void setVideo(String videoPath) {
+  void setVideo({required String videoPath, bool? primary}) {
     final File video = File(videoPath);
     emit(state.copyWith(videoFile: video));
-    CustomRouting.replaceStackWithNamed(NamedRoutes.confirm.path);
+    primary != null && primary == true
+        ? null
+        : CustomRouting.replaceStackWithNamed(NamedRoutes.confirm.path);
   }
 
   Future<void> timerStart() async {
@@ -98,18 +100,18 @@ class ReelCubit extends Cubit<ReelStateModel> {
 
   Future<void> stopVideo() async {
     final XFile videoFile = await cameraController.stopVideoRecording();
+
+    setVideo(videoPath: videoFile.path);
     emit(state.copyWith(
         isRecording: false,
         timeOut: 0,
         timer: 0,
         timerState: TimerState.noTimer));
-    setVideo(videoFile.path);
   }
 
-  ///////// trim fuctions /////////////
+  /////////////// trim fuctions ////////////////////////
   void onChangePlaybackState(bool value) =>
       emit(state.copyWith(trimPlaying: value));
-
   trimStartAsign(double value) => emit(state.copyWith(trimStart: value));
   trimEndAsign(double value) => emit(state.copyWith(trimEndValue: value));
 
@@ -119,53 +121,43 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   ///////////// Audio Merge with audio /////////////////
-  String audioPathUrl =
-      'https://firebasestorage.googleapis.com/v0/b/beworld-7c16c.appspot.com/o/tukitakisongs%2FTogether.mp3?alt=media&token=9e103c27-ef01-40db-a9a2-c5f59d1d15bf';
-  File? audioFile;
-  File? outputFile;
 
   Future<void> mergeVideoAndAudio() async {
-    audioFile = File(audioPathUrl);
-    String videoPath = state.videoFile!.path;
+    const String audioPathUrl =
+        'https://firebasestorage.googleapis.com/v0/b/beworld-7c16c.appspot.com/o/tukitakisongs%2FTogether.mp3?alt=media&token=9e103c27-ef01-40db-a9a2-c5f59d1d15bf';
+    final File audioFile = File(audioPathUrl);
+    final String videoPath = state.videoFile!.path;
     emit(state.copyWith(isMergingFiles: true));
-    Directory tempDirectory = await getTemporaryDirectory();
-    String outputPath = '${tempDirectory.path}/output.mp4';
+    final Directory tempDirectory = await getTemporaryDirectory();
+    final String outputPath = '${tempDirectory.path}/output.mp4';
+    final File outputFile = File(outputPath);
     //clear the output file before merging
-    File outputFile = File(outputPath);
-    if (outputFile.existsSync()) {
-      outputFile.deleteSync();
-    }
-    String command =
-        '-i $videoPath -i ${audioFile!.path}  -c copy -map 0:v:0 -map 1:a:0 $outputPath';
-
+    if (outputFile.existsSync()) outputFile.deleteSync();
+    final String command =
+        '-i $videoPath -i ${audioFile.path}  -c copy -map 0:v:0 -map 1:a:0 $outputPath';
     FFmpegKit.execute(command).then((session) async {
-      ReturnCode? returnCode = await session.getReturnCode();
+      final ReturnCode? returnCode = await session.getReturnCode();
       if (returnCode == null) {
         log('Session was cancelled');
         return;
       } else {
         log("returnCode###############          :${returnCode.getValue()}");
-        bool value = ReturnCode.isSuccess(returnCode);
+        final bool value = ReturnCode.isSuccess(returnCode);
         if (value) {
           log('Session completed successfully');
           // final String compressedPath = await compressVideo(outputPath);
-          setVideo(outputPath);
+          setVideo(videoPath: outputPath);
+          log("========================================================================================================     SPEED COMPLETED   ====================================================");
           emit(state.copyWith(isMergingFiles: false, isMerged: true));
         } else {
-          bool isCancel = ReturnCode.isCancel(returnCode);
+          final bool isCancel = ReturnCode.isCancel(returnCode);
           emit(state.copyWith(isMergingFiles: false));
           if (isCancel) {
-            // Session was cancelled
             log('Session was cancelled');
-            emit(
-              state.copyWith(isMergingFiles: false),
-            );
+            emit(state.copyWith(isMergingFiles: false));
           } else {
-            // Session failed
-            log('Session failed');
-            //log session output
-            String? output = await session.getAllLogsAsString();
-            log("output--------------:$output");
+            final String? output = await session.getAllLogsAsString();
+            log(" 'Session failed: output===== --------------:$output");
             emit(state.copyWith(isMergingFiles: false));
           }
         }
@@ -182,5 +174,23 @@ class ReelCubit extends Cubit<ReelStateModel> {
         includeAudio: true);
     log("compressed");
     return mediaInfo!.path!;
+  }
+
+  ////// Add 2x Speed ///////
+  void increaseSpeed() async {
+    final String input = state.videoFile!.path;
+    final Directory tempDirectory = await getTemporaryDirectory();
+    final String outputPath = '${tempDirectory.path}/output.mp4';
+    final File outputFile = File(outputPath);
+    if (outputFile.existsSync()) outputFile.deleteSync();
+    final String command = '-i $input -filter:v "setpts=0.5*PTS" $outputPath';
+    FFmpegKit.execute(command).then((value) async {
+      final ReturnCode? returnCode = await value.getReturnCode();
+      if (returnCode != null) {
+        setVideo(videoPath: outputPath, primary: true);
+      } else {
+        log("error while speed function -========-=-=-=-=-=-=-=-=-");
+      }
+    });
   }
 }
