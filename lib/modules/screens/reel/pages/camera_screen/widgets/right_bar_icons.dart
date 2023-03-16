@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/instance_manager.dart';
-import 'package:tuki_taki/global/constants.dart';
 import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
 import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
-import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 
 class RightBarIcons extends StatelessWidget {
   RightBarIcons({super.key});

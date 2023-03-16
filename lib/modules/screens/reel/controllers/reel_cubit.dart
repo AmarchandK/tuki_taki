@@ -6,7 +6,6 @@ import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:tapioca/tapioca.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
 import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
@@ -68,7 +67,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   Future<void> timerStart() async {
-    int satrt = timerSelection();
+    int satrt = timerSelection(); 
     for (int i = satrt; i >= 0; i--) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timer: i));
@@ -89,24 +88,31 @@ class ReelCubit extends Cubit<ReelStateModel> {
     for (int i = 0; i <= timeOutValue; i++) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timeOut: i));
+      if (state.timeOut == 30 && state.cameraStopped == false) {
+        await stopVideo();
+      }
     }
+    emit(state.copyWith(cameraStopped: false, timeOut: 0));
   }
 
   Future<void> takeVideo() async {
     await timerStart();
     emit(state.copyWith(isRecording: true));
     await cameraController.startVideoRecording();
+    timeOutCalled(30);
   }
 
   Future<void> stopVideo() async {
-    final XFile videoFile = await cameraController.stopVideoRecording();
-
-    setVideo(videoPath: videoFile.path);
-    emit(state.copyWith(
-        isRecording: false,
-        timeOut: 0,
-        timer: 0,
-        timerState: TimerState.noTimer));
+    if (state.cameraStopped == false) {
+      final XFile videoFile = await cameraController.stopVideoRecording();
+      setVideo(videoPath: videoFile.path);
+      emit(state.copyWith(
+          isRecording: false,
+          timeOut: 0,
+          timer: 0,
+          timerState: TimerState.noTimer,
+          cameraStopped: true));
+    }
   }
 
   /////////////// trim fuctions ////////////////////////
@@ -119,7 +125,6 @@ class ReelCubit extends Cubit<ReelStateModel> {
   void filterAddLoading(bool load) {
     emit(state.copyWith(filterLoading: load));
   }
-
   ///////////// Audio Merge with audio /////////////////
 
   Future<void> mergeVideoAndAudio() async {
@@ -127,7 +132,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
         'https://firebasestorage.googleapis.com/v0/b/beworld-7c16c.appspot.com/o/tukitakisongs%2FTogether.mp3?alt=media&token=9e103c27-ef01-40db-a9a2-c5f59d1d15bf';
     final File audioFile = File(audioPathUrl);
     final String videoPath = state.videoFile!.path;
-    emit(state.copyWith(isMergingFiles: true));
+    emit(state.copyWith(songAddLoading: true));
     final Directory tempDirectory = await getTemporaryDirectory();
     final String outputPath = '${tempDirectory.path}/output.mp4';
     final File outputFile = File(outputPath);
@@ -148,17 +153,17 @@ class ReelCubit extends Cubit<ReelStateModel> {
           // final String compressedPath = await compressVideo(outputPath);
           setVideo(videoPath: outputPath);
           log("========================================================================================================     SPEED COMPLETED   ====================================================");
-          emit(state.copyWith(isMergingFiles: false, isMerged: true));
+          emit(state.copyWith(songAddLoading: false));
         } else {
           final bool isCancel = ReturnCode.isCancel(returnCode);
-          emit(state.copyWith(isMergingFiles: false));
+          emit(state.copyWith(songAddLoading: false));
           if (isCancel) {
             log('Session was cancelled');
-            emit(state.copyWith(isMergingFiles: false));
+            emit(state.copyWith(songAddLoading: false));
           } else {
             final String? output = await session.getAllLogsAsString();
             log(" 'Session failed: output===== --------------:$output");
-            emit(state.copyWith(isMergingFiles: false));
+            emit(state.copyWith(songAddLoading: false));
           }
         }
       }

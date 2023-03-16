@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/instance_manager.dart';
 import 'package:tuki_taki/global/constants.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
 import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/modules/screens/reel/controllers/reel_cubit.dart';
+import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
 import 'package:tuki_taki/modules/screens/reel/pages/camera_screen/widgets/icons.dart';
 import 'package:video_player/video_player.dart';
 
@@ -28,6 +31,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     videoPlayerController.pause();
     videoPlayerController.dispose();
     super.dispose();
+
   }
 
   void videoPlayerInitialize() {
@@ -41,64 +45,74 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
 
   void _increaseSpeed() {
     videoPlayerController.setPlaybackSpeed(2);
-    controller.increaseSpeed();   
+    controller.increaseSpeed();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          Center(
-            child: AspectRatio(
-              aspectRatio: videoPlayerController.value.aspectRatio,
-              child: VideoPlayer(videoPlayerController),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: TextButton(onPressed: () {}, child: const Text("Done")),
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              margin: const EdgeInsets.only(right: 8),
-              decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(.7),
-                  borderRadius: BorderRadius.circular(5)),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CameraPageIcons(
-                    iconString: AppCustomIcons.songAdd,
-                    onTap: () => controller.mergeVideoAndAudio(),
-                  ),
-                  const Text("Audio", style: TextStyle(color: Colors.white)),
-                  const SizedBox(height: 10),
-                  CameraPageIcons(
-                      iconString: AppCustomIcons.videoFilter,
-                      onTap: () =>
-                          CustomRouting.pushNamed(NamedRoutes.filter.path)),
-                  const Text("Filters", style: TextStyle(color: Colors.white)),
-                  const SizedBox(height: 10),
-                  CameraPageIcons(
-                      iconString: AppCustomIcons.videoTrim,
-                      onTap: () =>
-                          CustomRouting.pushNamed(NamedRoutes.trim.path)),
-                  const Text("Trim", style: TextStyle(color: Colors.white)),
-                  const SizedBox(height: 10),
-                  IconButton(
-                      onPressed: _increaseSpeed,
-                      icon: const Icon(
-                        Icons.fast_forward,
-                        color: Colors.white,
-                      )),
-                ],
+      body: BlocBuilder<ReelCubit, ReelStateModel>(
+        bloc: controller,
+        builder: (context, state) {
+          return Stack(
+            children: [
+              Center(
+                child: AspectRatio(
+                  aspectRatio: videoPlayerController.value.aspectRatio,
+                  child: VideoPlayer(videoPlayerController),
+                ),
               ),
-            ),
-          )
-        ],
+              Align(
+                alignment: Alignment.topRight,
+                child: TextButton(onPressed: () {}, child: const Text("Done")),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(.7),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      controller.state.songAddLoading
+                          ? const CupertinoActivityIndicator(
+                              color: Colors.white)
+                          : CameraPageIcons(
+                              iconString: AppCustomIcons.songAdd,
+                              onTap: () => controller.mergeVideoAndAudio(),
+                            ),
+                      Text(controller.state.songAddLoading ? "" : "Audio",
+                          style: const TextStyle(color: Colors.white)),
+                      const SizedBox(height: 10),
+                      CameraPageIcons(
+                          iconString: AppCustomIcons.videoFilter,
+                          onTap: () =>
+                              CustomRouting.pushNamed(NamedRoutes.filter.path)),
+                      const Text("Filters",
+                          style: TextStyle(color: Colors.white)),
+                      const SizedBox(height: 10),
+                      CameraPageIcons(
+                          iconString: AppCustomIcons.videoTrim,
+                          onTap: () =>
+                              CustomRouting.pushNamed(NamedRoutes.trim.path)),
+                      const Text("Trim", style: TextStyle(color: Colors.white)),
+                      const SizedBox(height: 10),
+                      IconButton(
+                          onPressed: _increaseSpeed,
+                          icon: const Icon(
+                            Icons.fast_forward,
+                            color: Colors.white,
+                          )),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }
