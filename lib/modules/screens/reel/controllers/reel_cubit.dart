@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tuki_taki/global/routing/custom_routing.dart';
 import 'package:tuki_taki/global/routing/named_routes.dart';
+import 'package:tuki_taki/modules/screens/reel/model/camera_state_model.dart';
 import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -67,7 +68,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   Future<void> timerStart() async {
-    int satrt = timerSelection(); 
+    int satrt = timerSelection();
     for (int i = satrt; i >= 0; i--) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timer: i));
@@ -197,5 +198,32 @@ class ReelCubit extends Cubit<ReelStateModel> {
         log("error while speed function -========-=-=-=-=-=-=-=-=-");
       }
     });
+  }
+
+  ///////// layout recording   /////////////
+  void createGrid(int i) {
+    final list = List.generate(i,
+        (index) => CameraStateModel(cameraRecording: false, recorded: false));
+    emit(state.copyWith(cameraLaouts: list));
+  }
+
+  void startLayoutCamera(int index) async {
+    log('Pressed layout $index ');
+    List<CameraStateModel> list = [...state.cameraLaouts];
+    CameraStateModel layout = list[index];
+    layout = CameraStateModel(cameraRecording: true, recorded: false);
+    list[index] = layout;
+    emit(state.copyWith(cameraLaouts: list));
+    await cameraController.startVideoRecording();
+  }
+
+  Future<String> stopLayoutVideo(index) async {
+    List<CameraStateModel> list = [...state.cameraLaouts];
+    CameraStateModel layout = list[index];
+    layout = CameraStateModel(cameraRecording: false, recorded: true);
+    list[index] = layout;
+    emit(state.copyWith(cameraLaouts: list));
+    final XFile xFile = await cameraController.stopVideoRecording();
+    return xFile.path;
   }
 }

@@ -17,12 +17,20 @@ class ConfirmScreen extends StatefulWidget {
   State<ConfirmScreen> createState() => _ConfirmScreenState();
 }
 
-class _ConfirmScreenState extends State<ConfirmScreen> {
+class _ConfirmScreenState extends State<ConfirmScreen>
+    with SingleTickerProviderStateMixin {
   late final VideoPlayerController videoPlayerController;
   final ReelCubit controller = Get.find<ReelCubit>();
+  late AnimationController _controller;
+  late Animation<double> _animation;
   @override
   void initState() {
     videoPlayerInitialize();
+    _controller = AnimationController(
+      vsync: this,
+      duration:const Duration(milliseconds: 500),
+    );
+    _animation = Tween<double>(begin: 1, end: 2).animate(_controller);
     super.initState();
   }
 
@@ -31,21 +39,28 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     videoPlayerController.pause();
     videoPlayerController.dispose();
     super.dispose();
-
   }
 
   void videoPlayerInitialize() {
     videoPlayerController =
         VideoPlayerController.file(controller.state.videoFile!);
     videoPlayerController.initialize();
-    videoPlayerController.play();
-    videoPlayerController.setVolume(1);
-    videoPlayerController.setLooping(true);
+    // videoPlayerController.play();
+    // videoPlayerController.setVolume(1);
+    // videoPlayerController.setLooping(true);
   }
 
+  bool isSpeedTaped = false;
   void _increaseSpeed() {
-    videoPlayerController.setPlaybackSpeed(2);
-    controller.increaseSpeed();
+    // videoPlayerController.setPlaybackSpeed(2);
+    // controller.increaseSpeed();
+    speedTaping();
+  }
+
+  void speedTaping() {
+    isSpeedTaped = !isSpeedTaped;
+    setState(() { });
+    isSpeedTaped ? _controller.forward() : _controller.reverse();
   }
 
   @override
@@ -68,7 +83,10 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: Container(
+                child: AnimatedContainer(
+                  height: isSpeedTaped ? 300 : 200,
+                  duration: const Duration(milliseconds: 500),
+                  curve: Curves.easeInOut,
                   margin: const EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
                       color: Colors.black.withOpacity(.7),
@@ -94,7 +112,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                       const Text("Filters",
                           style: TextStyle(color: Colors.white)),
                       const SizedBox(height: 10),
-                      CameraPageIcons(
+                      CameraPageIcons(  
                           iconString: AppCustomIcons.videoTrim,
                           onTap: () =>
                               CustomRouting.pushNamed(NamedRoutes.trim.path)),

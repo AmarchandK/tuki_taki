@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tuki_taki/modules/screens/reel/model/camera_state_model.dart';
 part 'reel_state.freezed.dart';
 
 @JsonSerializable(createFactory: false)
@@ -24,7 +25,7 @@ class ReelStateModel with _$ReelStateModel {
   @Default(false)  bool filterLoading,
     @Default(false)bool songAddLoading,
     @Default(false)bool speedLoading,
-
+    @Default([]) List<CameraStateModel> cameraLaouts 
   }) = _ReelStateModel;
 }
 
