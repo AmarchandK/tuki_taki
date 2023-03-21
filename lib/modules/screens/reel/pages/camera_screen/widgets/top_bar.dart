@@ -47,7 +47,7 @@ class TopBarIcons extends StatelessWidget {
                 const Spacer(),
                 CameraPageIcons(
                     iconString: iconSelection(),
-                    onTap: () => controller.timerPressed()),
+                    onTap: () => controller.timerStateChange()),
                 const Spacer(),
                 IconButton(
                     onPressed: () {},

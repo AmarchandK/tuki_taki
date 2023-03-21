@@ -1,5 +1,3 @@
-import 'dart:developer';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +8,6 @@ import 'package:video_player/video_player.dart';
 
 class LayoutCamera extends StatefulWidget {
   const LayoutCamera({super.key});
-
   @override
   State<LayoutCamera> createState() => _LayoutCameraState();
 }
@@ -18,14 +15,12 @@ class LayoutCamera extends StatefulWidget {
 class _LayoutCameraState extends State<LayoutCamera> {
   BorderSide borderSide = const BorderSide(color: Colors.red, width: 3);
   final ReelCubit controller = ReelCubit();
-  late VideoPlayerController videoPlayerController1;
-  late File? file;
-  bool one = false;
-  bool two = false;
+  int layoutPositon = 0;
+  bool layoutRecording = false;
 
   @override
   void initState() {
-    Get.put(controller);
+    Get.put(controller, permanent: true);
     controller.startCamera(0);
     controller.createGrid(2);
     super.initState();
@@ -38,15 +33,27 @@ class _LayoutCameraState extends State<LayoutCamera> {
       bloc: controller,
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    controller.onLayoutDone();
+                  },
+                  child: const Text(
+                    'Done',
+                    style: TextStyle(color: Colors.white),
+                  ))
+            ],
+          ),
           body: state.isCameraControllerInitialsed || state.isRecording
               ? ListView.builder(
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: controller.state.cameraLaouts.length,
                   itemBuilder: (context, index) => GestureDetector(
-                    onTap: () {
-                      !one ? recordCamera(index) : videoPlay(index);
-                      one = !one;
-                    },
+                    onTap: () => videoPlay(
+                        index: index,
+                        videoPlayerController: controller
+                            .state.cameraLaouts[index].videoPlayerController!),
                     child: Container(
                       height: size.height / 2.1,
                       decoration:
@@ -55,36 +62,46 @@ class _LayoutCameraState extends State<LayoutCamera> {
                           controller.state.cameraLaouts[index].cameraRecording
                               ? controller.cameraController.buildPreview()
                               : controller.state.cameraLaouts[index].recorded
-                                  ? VideoPlayer(videoPlayerController1)
+                                  ? VideoPlayer(controller
+                                      .state
+                                      .cameraLaouts[index]
+                                      .videoPlayerController!)
                                   : const Center(
                                       child: CupertinoActivityIndicator()),
                     ),
                   ),
                 )
               : const Center(child: CupertinoActivityIndicator()),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => handleButton(),
+            backgroundColor: Colors.red,
+          ),
         );
       },
     );
   }
 
- void videoPlay(int index) async {
-    await videoPlayerController1.play();
-    videoPlayerController1.setVolume(1);
+  void videoPlay(
+      {required int index,
+      required VideoPlayerController videoPlayerController}) async {
+    if (videoPlayerController.value.isPlaying) {
+      await videoPlayerController.pause();
+    } else {
+      await videoPlayerController.play();
+      await videoPlayerController.setLooping(true);
+    }
   }
 
- void recordCamera(int index) async {
-    try {
-      controller.startLayoutCamera(index);
-      await Future.delayed(const Duration(seconds: 5));
-      final String path = await controller.stopLayoutVideo(index);
-      file = File(path);
-      videoPlayerController1 = VideoPlayerController.file(file!);
-      await videoPlayerController1.initialize();
-      videoPlayerController1.play();
-      videoPlayerController1.setLooping(true);
-      setState(() {});
-    } catch (e) {
-      log("error on video play =================$e");
+  void handleButton() {
+    if (!layoutRecording) {
+      controller.startLayoutCamera(layoutPositon);
+      layoutRecording = !layoutRecording;
+    } else {
+      controller.stopLayoutVideo(layoutPositon);
+      layoutPositon++;
+      layoutRecording = !layoutRecording;
     }
   }
 }

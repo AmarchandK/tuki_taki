@@ -1,8 +1,15 @@
 import 'dart:io';
 
+import 'package:video_player/video_player.dart';
+
 class CameraStateModel {
-  File? cameraFile;
+  final File? cameraFile;
+  final VideoPlayerController? videoPlayerController;
   bool cameraRecording = false;
   bool recorded = false;
-  CameraStateModel({this.cameraFile, required this.cameraRecording, required this.recorded});
+  CameraStateModel(
+      {required this.cameraRecording,
+      required this.recorded,
+      this.cameraFile,
+      this.videoPlayerController});
 }

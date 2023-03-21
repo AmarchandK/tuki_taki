@@ -11,11 +11,13 @@ import 'package:tuki_taki/global/routing/named_routes.dart';
 import 'package:tuki_taki/modules/screens/reel/model/camera_state_model.dart';
 import 'package:tuki_taki/modules/screens/reel/model/reel_state.dart';
 import 'package:video_compress/video_compress.dart';
+import 'package:video_player/video_player.dart';
 
 class ReelCubit extends Cubit<ReelStateModel> {
   ReelCubit() : super(ReelStateModel());
 ////////////// Camera Functionalities //////////////////
   late CameraController cameraController;
+  final List<String> layoutVideoPaths = [];
   Future<void> startCamera(int cameraPosition) async {
     _setCameraAsInitialised(false);
     final List<CameraDescription> cameraList = await availableCameras();
@@ -37,7 +39,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     emit(state.copyWith(initialCamera: !state.initialCamera));
   }
 
-  void timerPressed() {
+  void timerStateChange() {
     if (state.timerState == TimerState.noTimer) {
       emit(state.copyWith(timerState: TimerState.threeTimer));
     } else if (state.timerState == TimerState.threeTimer) {
@@ -67,15 +69,15 @@ class ReelCubit extends Cubit<ReelStateModel> {
         : CustomRouting.replaceStackWithNamed(NamedRoutes.confirm.path);
   }
 
-  Future<void> timerStart() async {
-    int satrt = timerSelection();
+  Future<void> _timerStart() async {
+    int satrt = _timerSelection();
     for (int i = satrt; i >= 0; i--) {
       await Future.delayed(const Duration(seconds: 1));
       emit(state.copyWith(timer: i));
     }
   }
 
-  int timerSelection() {
+  int _timerSelection() {
     if (state.timerState == TimerState.threeTimer) {
       return 3;
     } else if (state.timerState == TimerState.fiveTimer) {
@@ -97,7 +99,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   Future<void> takeVideo() async {
-    await timerStart();
+    await _timerStart();
     emit(state.copyWith(isRecording: true));
     await cameraController.startVideoRecording();
     timeOutCalled(30);
@@ -128,17 +130,21 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
   ///////////// Audio Merge with audio /////////////////
 
+  Future<String> _getTempPath() async {
+    final Directory tempDirectory = await getTemporaryDirectory();
+    final String outputPath = '${tempDirectory.path}/output.mp4';
+    final File outputFile = File(outputPath);
+    if (outputFile.existsSync()) outputFile.deleteSync();
+    return outputPath;
+  }
+
   Future<void> mergeVideoAndAudio() async {
     const String audioPathUrl =
         'https://firebasestorage.googleapis.com/v0/b/beworld-7c16c.appspot.com/o/tukitakisongs%2FTogether.mp3?alt=media&token=9e103c27-ef01-40db-a9a2-c5f59d1d15bf';
     final File audioFile = File(audioPathUrl);
     final String videoPath = state.videoFile!.path;
     emit(state.copyWith(songAddLoading: true));
-    final Directory tempDirectory = await getTemporaryDirectory();
-    final String outputPath = '${tempDirectory.path}/output.mp4';
-    final File outputFile = File(outputPath);
-    //clear the output file before merging
-    if (outputFile.existsSync()) outputFile.deleteSync();
+    final String outputPath = await _getTempPath();
     final String command =
         '-i $videoPath -i ${audioFile.path}  -c copy -map 0:v:0 -map 1:a:0 $outputPath';
     FFmpegKit.execute(command).then((session) async {
@@ -185,10 +191,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
   ////// Add 2x Speed ///////
   void increaseSpeed() async {
     final String input = state.videoFile!.path;
-    final Directory tempDirectory = await getTemporaryDirectory();
-    final String outputPath = '${tempDirectory.path}/output.mp4';
-    final File outputFile = File(outputPath);
-    if (outputFile.existsSync()) outputFile.deleteSync();
+    final String outputPath = await _getTempPath();
     final String command = '-i $input -filter:v "setpts=0.5*PTS" $outputPath';
     FFmpegKit.execute(command).then((value) async {
       final ReturnCode? returnCode = await value.getReturnCode();
@@ -208,7 +211,6 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   void startLayoutCamera(int index) async {
-    log('Pressed layout $index ');
     List<CameraStateModel> list = [...state.cameraLaouts];
     CameraStateModel layout = list[index];
     layout = CameraStateModel(cameraRecording: true, recorded: false);
@@ -217,13 +219,45 @@ class ReelCubit extends Cubit<ReelStateModel> {
     await cameraController.startVideoRecording();
   }
 
-  Future<String> stopLayoutVideo(index) async {
+  Future<void> stopLayoutVideo(index) async {
     List<CameraStateModel> list = [...state.cameraLaouts];
     CameraStateModel layout = list[index];
-    layout = CameraStateModel(cameraRecording: false, recorded: true);
-    list[index] = layout;
-    emit(state.copyWith(cameraLaouts: list));
-    final XFile xFile = await cameraController.stopVideoRecording();
-    return xFile.path;
+    try {
+      final XFile xFile = await cameraController.stopVideoRecording();
+      final File file = File(xFile.path);
+      final VideoPlayerController playerController =
+          VideoPlayerController.file(file);
+      await playerController.initialize();
+      layout = CameraStateModel(
+          cameraRecording: false,
+          recorded: true,
+          cameraFile: file,
+          videoPlayerController: playerController);
+      list[index] = layout;
+      emit(state.copyWith(cameraLaouts: list));
+      cameraController.initialize();
+      layoutVideoPaths.add(file.path);
+    } catch (e) {
+      log("error on stop videoLayout=============== $e");
+    }
+  }
+
+  Future<void> onLayoutDone() async {
+    try {
+      final String outputPath = await _getTempPath();
+      const String filter =
+          " [0:v]scale=480:640,setsar=1[l];[1:v]scale=480:640,setsar=1[r];[l][r]hstack;[0][1]amix -vsync 0 ";
+      final String command =
+          " -y -i ${layoutVideoPaths[0]} -i ${layoutVideoPaths[1]} -filter_complex$filter$outputPath";
+      await FFmpegKit.execute(command).then((value) async {
+        final ReturnCode? returnCode = await value.getReturnCode();
+        if (returnCode != null) {
+          setVideo(videoPath: outputPath);
+          layoutVideoPaths.clear();
+        }
+      });
+    } catch (e) {
+      log("error while Layout -========-=-=-=-=-=-=-=-=- $e");
+    }
   }
 }
