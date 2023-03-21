@@ -28,7 +28,7 @@ class _ConfirmScreenState extends State<ConfirmScreen>
     videoPlayerInitialize();
     _controller = AnimationController(
       vsync: this,
-      duration:const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 500),
     );
     _animation = Tween<double>(begin: 1, end: 2).animate(_controller);
     super.initState();
@@ -59,7 +59,7 @@ class _ConfirmScreenState extends State<ConfirmScreen>
 
   void speedTaping() {
     isSpeedTaped = !isSpeedTaped;
-    setState(() { });
+    setState(() {});
     isSpeedTaped ? _controller.forward() : _controller.reverse();
   }
 
@@ -83,16 +83,13 @@ class _ConfirmScreenState extends State<ConfirmScreen>
               ),
               Align(
                 alignment: Alignment.centerRight,
-                child: AnimatedContainer(
-                  height: isSpeedTaped ? 300 : 200,
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOut,
+                child: Container(
+                  height: 250,
                   margin: const EdgeInsets.only(right: 8),
                   decoration: BoxDecoration(
                       color: Colors.black.withOpacity(.7),
                       borderRadius: BorderRadius.circular(5)),
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       controller.state.songAddLoading
@@ -104,26 +101,22 @@ class _ConfirmScreenState extends State<ConfirmScreen>
                             ),
                       Text(controller.state.songAddLoading ? "" : "Audio",
                           style: const TextStyle(color: Colors.white)),
-                      const SizedBox(height: 10),
                       CameraPageIcons(
                           iconString: AppCustomIcons.videoFilter,
                           onTap: () =>
                               CustomRouting.pushNamed(NamedRoutes.filter.path)),
                       const Text("Filters",
                           style: TextStyle(color: Colors.white)),
-                      const SizedBox(height: 10),
-                      CameraPageIcons(  
+                      CameraPageIcons(
                           iconString: AppCustomIcons.videoTrim,
                           onTap: () =>
                               CustomRouting.pushNamed(NamedRoutes.trim.path)),
                       const Text("Trim", style: TextStyle(color: Colors.white)),
-                      const SizedBox(height: 10),
                       IconButton(
-                          onPressed: _increaseSpeed,
-                          icon: const Icon(
-                            Icons.fast_forward,
-                            color: Colors.white,
-                          )),
+                        onPressed: _increaseSpeed,
+                        icon:
+                            const Icon(Icons.fast_forward, color: Colors.white),
+                      ),
                     ],
                   ),
                 ),

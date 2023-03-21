@@ -17,7 +17,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
   ReelCubit() : super(ReelStateModel());
 ////////////// Camera Functionalities //////////////////
   late CameraController cameraController;
-  final List<String> layoutVideoPaths = [];
+  final List<String> layoutVideoPathList = [];
   Future<void> startCamera(int cameraPosition) async {
     _setCameraAsInitialised(false);
     final List<CameraDescription> cameraList = await availableCameras();
@@ -61,10 +61,10 @@ class ReelCubit extends Cubit<ReelStateModel> {
     emit(state.copyWith(isCameraControllerInitialsed: status));
   }
 
-  void setVideo({required String videoPath, bool? primary}) {
+  void setVideo({required String videoPath, bool? isInBaground}) {
     final File video = File(videoPath);
     emit(state.copyWith(videoFile: video));
-    primary != null && primary == true
+    isInBaground != null && isInBaground == true
         ? null
         : CustomRouting.replaceStackWithNamed(NamedRoutes.confirm.path);
   }
@@ -196,7 +196,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     FFmpegKit.execute(command).then((value) async {
       final ReturnCode? returnCode = await value.getReturnCode();
       if (returnCode != null) {
-        setVideo(videoPath: outputPath, primary: true);
+        setVideo(videoPath: outputPath, isInBaground: true);
       } else {
         log("error while speed function -========-=-=-=-=-=-=-=-=-");
       }
@@ -236,7 +236,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
       list[index] = layout;
       emit(state.copyWith(cameraLaouts: list));
       cameraController.initialize();
-      layoutVideoPaths.add(file.path);
+      layoutVideoPathList.add(file.path);
     } catch (e) {
       log("error on stop videoLayout=============== $e");
     }
@@ -247,17 +247,20 @@ class ReelCubit extends Cubit<ReelStateModel> {
       final String outputPath = await _getTempPath();
       const String filter =
           " [0:v]scale=480:640,setsar=1[l];[1:v]scale=480:640,setsar=1[r];[l][r]hstack;[0][1]amix -vsync 0 ";
+      log("left path: ${layoutVideoPathList[0]} right : ${layoutVideoPathList[1]} $outputPath");
       final String command =
-          " -y -i ${layoutVideoPaths[0]} -i ${layoutVideoPaths[1]} -filter_complex$filter$outputPath";
+          " -y -i ${layoutVideoPathList[0]} -i ${layoutVideoPathList[1]} -filter_complex$filter$outputPath -loglevel verbose";
       await FFmpegKit.execute(command).then((value) async {
+        String? error = await value.getAllLogsAsString();
+        log(error!);
         final ReturnCode? returnCode = await value.getReturnCode();
         if (returnCode != null) {
           setVideo(videoPath: outputPath);
-          layoutVideoPaths.clear();
+          layoutVideoPathList.clear();
         }
       });
     } catch (e) {
-      log("error while Layout -========-=-=-=-=-=-=-=-=- $e");
+      log("error while  combine -========-=-=-=-=-=-=-=-=- $e");
     }
   }
 }
