@@ -16,7 +16,7 @@ import 'package:video_player/video_player.dart';
 
 class ReelCubit extends Cubit<ReelStateModel> {
   ReelCubit() : super(ReelStateModel());
-////////////// Camera Functionalities //////////////////
+  ///////////// Camera Functionalities //////////////////
   late CameraController cameraController;
   final List<String> layoutVideoPathList = [];
   Future<void> startCamera(int cameraPosition) async {
@@ -161,7 +161,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
           log('Session completed successfully');
           // final String compressedPath = await compressVideo(outputPath);
           setVideo(videoPath: outputPath);
-          log("========================================================================================================     SPEED COMPLETED   ====================================================");
+          log("===============================================     SPEED COMPLETED   ====================================================");
           emit(state.copyWith(songAddLoading: false));
         } else {
           final bool isCancel = ReturnCode.isCancel(returnCode);
@@ -171,7 +171,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
             emit(state.copyWith(songAddLoading: false));
           } else {
             final String? output = await session.getAllLogsAsString();
-            log(" 'Session failed: output===== --------------:$output");
+            log("Session failed: output===== --------------:$output");
             emit(state.copyWith(songAddLoading: false));
           }
         }
@@ -248,7 +248,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     try {
       final String outputPath = await _getTempPath();
       final String command =
-          " -i ${layoutVideoPathList[0]} -i ${layoutVideoPathList[1]} -filter_complex vstack=inputs=2 $outputPath";
+          " -i ${layoutVideoPathList[0]} -i ${layoutVideoPathList[1]} -filter_complex hstack=inputs=2 $outputPath";
       final FFmpegSession value = await FFmpegKit.execute(command);
       String? error = await value.getAllLogsAsString();
       log(error!);

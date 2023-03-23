@@ -60,7 +60,7 @@ class _ConfirmScreenState extends State<ConfirmScreen>
             children: [
               Center(
                 child: AspectRatio(
-                  aspectRatio: videoPlayerController.value.aspectRatio,
+                  aspectRatio: 4 / 3,
                   child: VideoPlayer(videoPlayerController),
                 ),
               ),

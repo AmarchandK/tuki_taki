@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,7 +47,10 @@ class _LayoutCameraState extends State<LayoutCamera> {
             ],
           ),
           body: state.isCameraControllerInitialsed || state.isRecording
-              ? ListView.builder(
+              ? ListView.separated(
+                  shrinkWrap: true,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 5),
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: controller.state.cameraLaouts.length,
                   itemBuilder: (context, index) => GestureDetector(
@@ -54,20 +58,24 @@ class _LayoutCameraState extends State<LayoutCamera> {
                         index: index,
                         videoPlayerController: controller
                             .state.cameraLaouts[index].videoPlayerController!),
-                    child: Container(
-                      height: size.height / 2.1,
-                      decoration:
-                          BoxDecoration(border: Border(top: borderSide)),
-                      child:
-                          controller.state.cameraLaouts[index].cameraRecording
-                              ? controller.cameraController.buildPreview()
-                              : controller.state.cameraLaouts[index].recorded
-                                  ? VideoPlayer(controller
-                                      .state
-                                      .cameraLaouts[index]
-                                      .videoPlayerController!)
-                                  : const Center(
-                                      child: CupertinoActivityIndicator()),
+                    child: AspectRatio(
+                      aspectRatio:
+                          controller.cameraController.value.aspectRatio,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            border:
+                                Border(top: borderSide, bottom: borderSide)),
+                        child:
+                            controller.state.cameraLaouts[index].cameraRecording
+                                ? cameraScreen(size)
+                                : controller.state.cameraLaouts[index].recorded
+                                    ? VideoPlayer(controller
+                                        .state
+                                        .cameraLaouts[index]
+                                        .videoPlayerController!)
+                                    : const Center(
+                                        child: CupertinoActivityIndicator()),
+                      ),
                     ),
                   ),
                 )
@@ -103,5 +111,30 @@ class _LayoutCameraState extends State<LayoutCamera> {
       layoutPositon++;
       layoutRecording = !layoutRecording;
     }
+  }
+
+  Widget cameraScreen(Size size) {
+    return Transform.scale(
+      scale: 1.0,
+      child: AspectRatio(
+        aspectRatio: 3.0 / 4.0,
+        child: OverflowBox(
+          alignment: Alignment.center,
+          child: FittedBox(
+            fit: BoxFit.fitWidth,
+            child: SizedBox(
+              width: size.width,
+              height:
+                  size.height / controller.cameraController.value.aspectRatio,
+              child: Stack(
+                children: <Widget>[
+                  CameraPreview(controller.cameraController),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

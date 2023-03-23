@@ -101,7 +101,7 @@ class _VideoFilterScreenState extends State<VideoFilterScreen> {
         Content(controller.state.videoFile!.path), tapiocaBalls[filterIndex]);
     await cup.suckUp(path);
     setState(() => processPercentage = 0);
-    controller.setVideo(videoPath:path);
+    controller.setVideo(videoPath: path);
     controller.filterAddLoading(false);
   }
 
@@ -132,17 +132,16 @@ class _VideoFilterScreenState extends State<VideoFilterScreen> {
                             child: const Text('Done')),
                       ),
                       Center(
-                          child: AspectRatio(
-                        aspectRatio: videoPlayerController.value.aspectRatio,
-                        child: Stack(
-                          children: [
-                            VideoPlayer(videoPlayerController),
-                            Container(
-                              color: color,
-                            ),
-                          ],
+                        child: AspectRatio(
+                          aspectRatio: 4 / 3,
+                          child: Stack(
+                            children: [
+                              VideoPlayer(videoPlayerController),
+                              Container(color: color)
+                            ],
+                          ),
                         ),
-                      )),
+                      ),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
