@@ -22,15 +22,9 @@ class _ConfirmScreenState extends State<ConfirmScreen>
   late final VideoPlayerController videoPlayerController;
   final ReelCubit controller = Get.find<ReelCubit>();
   late AnimationController _controller;
-  late Animation<double> _animation;
   @override
   void initState() {
     videoPlayerInitialize();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-    _animation = Tween<double>(begin: 1, end: 2).animate(_controller);
     super.initState();
   }
 
@@ -45,22 +39,14 @@ class _ConfirmScreenState extends State<ConfirmScreen>
     videoPlayerController =
         VideoPlayerController.file(controller.state.videoFile!);
     videoPlayerController.initialize();
-    // videoPlayerController.play();
-    // videoPlayerController.setVolume(1);
-    // videoPlayerController.setLooping(true);
+    videoPlayerController.play();
+    videoPlayerController.setVolume(1);
+    videoPlayerController.setLooping(true);
   }
 
-  bool isSpeedTaped = false;
   void _increaseSpeed() {
-    // videoPlayerController.setPlaybackSpeed(2);
-    // controller.increaseSpeed();
-    speedTaping();
-  }
-
-  void speedTaping() {
-    isSpeedTaped = !isSpeedTaped;
-    setState(() {});
-    isSpeedTaped ? _controller.forward() : _controller.reverse();
+    videoPlayerController.setPlaybackSpeed(2);
+    controller.increaseSpeed();
   }
 
   @override
@@ -70,6 +56,7 @@ class _ConfirmScreenState extends State<ConfirmScreen>
         bloc: controller,
         builder: (context, state) {
           return Stack(
+            fit: StackFit.expand,
             children: [
               Center(
                 child: AspectRatio(

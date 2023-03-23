@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_session.dart';
 import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -63,6 +64,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
 
   void setVideo({required String videoPath, bool? isInBaground}) {
     final File video = File(videoPath);
+    log("outPut path $video");
     emit(state.copyWith(videoFile: video));
     isInBaground != null && isInBaground == true
         ? null
@@ -245,22 +247,18 @@ class ReelCubit extends Cubit<ReelStateModel> {
   Future<void> onLayoutDone() async {
     try {
       final String outputPath = await _getTempPath();
-      const String filter =
-          " [0:v]scale=480:640,setsar=1[l];[1:v]scale=480:640,setsar=1[r];[l][r]hstack;[0][1]amix -vsync 0 ";
-      log("left path: ${layoutVideoPathList[0]} right : ${layoutVideoPathList[1]} $outputPath");
       final String command =
-          " -y -i ${layoutVideoPathList[0]} -i ${layoutVideoPathList[1]} -filter_complex$filter$outputPath -loglevel verbose";
-      await FFmpegKit.execute(command).then((value) async {
-        String? error = await value.getAllLogsAsString();
-        log(error!);
-        final ReturnCode? returnCode = await value.getReturnCode();
-        if (returnCode != null) {
-          setVideo(videoPath: outputPath);
-          layoutVideoPathList.clear();
-        }
-      });
+          " -i ${layoutVideoPathList[0]} -i ${layoutVideoPathList[1]} -filter_complex vstack=inputs=2 $outputPath";
+      final FFmpegSession value = await FFmpegKit.execute(command);
+      String? error = await value.getAllLogsAsString();
+      log(error!);
+      final ReturnCode? returnCode = await value.getReturnCode();
+      if (returnCode != null) {
+        setVideo(videoPath: outputPath);
+        layoutVideoPathList.clear();
+      }
     } catch (e) {
-      log("error while  combine -========-=-=-=-=-=-=-=-=- $e");
+      log("error while   videos -========-=-=-=-=-=-=-=-=- $e");
     }
   }
 }
