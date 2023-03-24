@@ -228,7 +228,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
       final XFile xFile = await cameraController.stopVideoRecording();
       final File file = File(xFile.path);
       final VideoPlayerController playerController =
-          VideoPlayerController.file(file);
+ VideoPlayerController.file(file);
       await playerController.initialize();
       layout = CameraStateModel(
           cameraRecording: false,
@@ -250,8 +250,6 @@ class ReelCubit extends Cubit<ReelStateModel> {
       final String command =
           " -i ${layoutVideoPathList[0]} -i ${layoutVideoPathList[1]} -filter_complex hstack=inputs=2 $outputPath";
       final FFmpegSession value = await FFmpegKit.execute(command);
-      String? error = await value.getAllLogsAsString();
-      log(error!);
       final ReturnCode? returnCode = await value.getReturnCode();
       if (returnCode != null) {
         setVideo(videoPath: outputPath);

@@ -14,7 +14,9 @@ class LayoutCamera extends StatefulWidget {
 }
 
 class _LayoutCameraState extends State<LayoutCamera> {
-  BorderSide borderSide = const BorderSide(color: Colors.red, width: 3);
+  final BorderSide borderSide = const BorderSide(color: Colors.red, width: 2);
+  final double targetRatio = 4 / 3;
+
   final ReelCubit controller = ReelCubit();
   int layoutPositon = 0;
   bool layoutRecording = false;
@@ -27,73 +29,7 @@ class _LayoutCameraState extends State<LayoutCamera> {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    return BlocBuilder<ReelCubit, ReelStateModel>(
-      bloc: controller,
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    controller.onLayoutDone();
-                  },
-                  child: const Text(
-                    'Done',
-                    style: TextStyle(color: Colors.white),
-                  ))
-            ],
-          ),
-          body: state.isCameraControllerInitialsed || state.isRecording
-              ? ListView.separated(
-                  shrinkWrap: true,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 5),
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: controller.state.cameraLaouts.length,
-                  itemBuilder: (context, index) => GestureDetector(
-                    onTap: () => videoPlay(
-                        index: index,
-                        videoPlayerController: controller
-                            .state.cameraLaouts[index].videoPlayerController!),
-                    child: AspectRatio(
-                      aspectRatio:
-                          controller.cameraController.value.aspectRatio,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border:
-                                Border(top: borderSide, bottom: borderSide)),
-                        child:
-                            controller.state.cameraLaouts[index].cameraRecording
-                                ? cameraScreen(size)
-                                : controller.state.cameraLaouts[index].recorded
-                                    ? VideoPlayer(controller
-                                        .state
-                                        .cameraLaouts[index]
-                                        .videoPlayerController!)
-                                    : const Center(
-                                        child: CupertinoActivityIndicator()),
-                      ),
-                    ),
-                  ),
-                )
-              : const Center(child: CupertinoActivityIndicator()),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: FloatingActionButton(
-            onPressed: () => handleButton(),
-            backgroundColor: Colors.red,
-          ),
-        );
-      },
-    );
-  }
-
-  void videoPlay(
-      {required int index,
-      required VideoPlayerController videoPlayerController}) async {
+  void videoPlay({required VideoPlayerController videoPlayerController}) async {
     if (videoPlayerController.value.isPlaying) {
       await videoPlayerController.pause();
     } else {
@@ -110,31 +46,87 @@ class _LayoutCameraState extends State<LayoutCamera> {
       controller.stopLayoutVideo(layoutPositon);
       layoutPositon++;
       layoutRecording = !layoutRecording;
+      if (controller.state.cameraLaouts.length == layoutPositon) {
+        layoutPositon = 0;
+      }
     }
   }
 
-  Widget cameraScreen(Size size) {
-    return Transform.scale(
-      scale: 1.0,
-      child: AspectRatio(
-        aspectRatio: 3.0 / 4.0,
-        child: OverflowBox(
-          alignment: Alignment.center,
-          child: FittedBox(
-            fit: BoxFit.fitWidth,
-            child: SizedBox(
-              width: size.width,
-              height:
-                  size.height / controller.cameraController.value.aspectRatio,
-              child: Stack(
-                children: <Widget>[
-                  CameraPreview(controller.cameraController),
-                ],
-              ),
-            ),
+  bool maintainAspectRatio(double width, double height) {
+    final double deviceRatio = width / height;
+    return deviceRatio > targetRatio;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return BlocBuilder<ReelCubit, ReelStateModel>(
+      bloc: controller,
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    controller.onLayoutDone();
+                  },
+                  child:
+                      const Text('Done', style: TextStyle(color: Colors.white)))
+            ],
           ),
-        ),
-      ),
+          body: state.isCameraControllerInitialsed || state.isRecording
+              ? ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: state.cameraLaouts.length,
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () => videoPlay(
+                        videoPlayerController:
+                            state.cameraLaouts[index].videoPlayerController!),
+                    child: Container(
+                      height: size.height / 2.3,
+                      decoration: BoxDecoration(
+                          border: index == 0
+                              ? Border(
+                                  top: borderSide,
+                                  left: borderSide,
+                                  right: borderSide)
+                              : Border.all(color: Colors.red, width: 2)),
+                      // child: maintainAspectRatio(
+                      //         double.infinity, double.infinity)
+                      //     ? OverflowBox(
+                      //         maxWidth: size.height * targetRatio,
+                      //         child: state.cameraLaouts[index].cameraRecording
+                      //             ? CameraPreview(controller.cameraController)
+                      //             : state.cameraLaouts[index].recorded
+                      //                 ? VideoPlayer(controller
+                      //                     .state
+                      //                     .cameraLaouts[index]
+                      //                     .videoPlayerController!)
+                      //                 : const Center(
+                      //                     child: CupertinoActivityIndicator()),
+                      //       ):
+                      child: AspectRatio(
+                        aspectRatio: targetRatio,
+                        child: state.cameraLaouts[index].cameraRecording
+                            ? CameraPreview(controller.cameraController)
+                            : state.cameraLaouts[index].recorded
+                                ? VideoPlayer(state
+                                    .cameraLaouts[index].videoPlayerController!)
+                                : const Center(
+                                    child: CupertinoActivityIndicator()),
+                      ),
+                    ),
+                  ),
+                )
+              : const Center(child: CupertinoActivityIndicator()),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: FloatingActionButton(
+              onPressed: () => handleButton(), backgroundColor: Colors.red),
+        );
+      },
     );
   }
 }

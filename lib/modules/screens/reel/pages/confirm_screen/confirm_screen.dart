@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,11 +19,9 @@ class ConfirmScreen extends StatefulWidget {
   State<ConfirmScreen> createState() => _ConfirmScreenState();
 }
 
-class _ConfirmScreenState extends State<ConfirmScreen>
-    with SingleTickerProviderStateMixin {
+class _ConfirmScreenState extends State<ConfirmScreen> {
   late final VideoPlayerController videoPlayerController;
   final ReelCubit controller = Get.find<ReelCubit>();
-  late AnimationController _controller;
   @override
   void initState() {
     videoPlayerInitialize();
@@ -36,12 +36,16 @@ class _ConfirmScreenState extends State<ConfirmScreen>
   }
 
   void videoPlayerInitialize() {
-    videoPlayerController =
-        VideoPlayerController.file(controller.state.videoFile!);
-    videoPlayerController.initialize();
-    videoPlayerController.play();
-    videoPlayerController.setVolume(1);
-    videoPlayerController.setLooping(true);
+    if (controller.state.videoFile != null) {
+      videoPlayerController =
+          VideoPlayerController.file(controller.state.videoFile!);
+      videoPlayerController.initialize();
+      videoPlayerController.play();
+      videoPlayerController.setVolume(1);
+      videoPlayerController.setLooping(true);
+      return;
+    }
+    log("videoFile null in confirm screen");
   }
 
   void _increaseSpeed() {

@@ -18,10 +18,6 @@ class TopBarIcons extends StatelessWidget {
     await controller.flashControle(flashOn ? FlashMode.torch : FlashMode.off);
   }
 
-  void _onTimOutPress() {
-    controller.timeOutCalled(30);
-  }
-
   String iconSelection() {
     return controller.state.timerState == TimerState.noTimer
         ? AppCustomIcons.timer
