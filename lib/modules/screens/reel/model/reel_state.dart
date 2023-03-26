@@ -12,7 +12,7 @@ class ReelStateModel with _$ReelStateModel {
     @Default(false) bool isLoading,
     @Default(false) bool isCameraControllerInitialsed,
     @Default(false) bool isRecording,
-    @Default(false)bool cameraStopped,
+    @Default(false) bool cameraStopped,
     @Default(0) int cameraPosition,
     @Default([]) List<CameraDescription> cameraList,
     @Default(0) double trimStart,
@@ -21,11 +21,14 @@ class ReelStateModel with _$ReelStateModel {
     @Default(0) int timer,
     @Default(0) int timeOut,
     @Default(true) bool initialCamera,
-    @Default(TimerState.noTimer)TimerState timerState ,
-  @Default(false)  bool filterLoading,
-    @Default(false)bool songAddLoading,
-    @Default(false)bool speedLoading,
-    @Default([]) List<CameraStateModel> cameraLaouts 
+    @Default(TimerState.noTimer) TimerState timerState,
+    @Default(false) bool filterLoading,
+    @Default(false) bool songAddLoading,
+    @Default(false) bool speedLoading,
+    @Default([]) List<CameraStateModel> cameraLaouts,
+    @Default('1x') String speedValue,
+    @Default(false) bool speedTaped,
+    @Default(false) bool showAnimation,
   }) = _ReelStateModel;
 }
 

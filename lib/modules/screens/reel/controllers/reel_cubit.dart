@@ -191,10 +191,10 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   ////// Add 2x Speed ///////
-  void increaseSpeed() async {
-    final String input = state.videoFile!.path;
+
+  void increaseSpeed({required String speed, required String path}) async {
     final String outputPath = await _getTempPath();
-    final String command = '-i $input -filter:v "setpts=0.5*PTS" $outputPath';
+    final String command = '-i $path -filter:v "setpts=$speed*PTS" $outputPath';
     FFmpegKit.execute(command).then((value) async {
       final ReturnCode? returnCode = await value.getReturnCode();
       if (returnCode != null) {
@@ -228,7 +228,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
       final XFile xFile = await cameraController.stopVideoRecording();
       final File file = File(xFile.path);
       final VideoPlayerController playerController =
- VideoPlayerController.file(file);
+          VideoPlayerController.file(file);
       await playerController.initialize();
       layout = CameraStateModel(
           cameraRecording: false,
@@ -258,5 +258,20 @@ class ReelCubit extends Cubit<ReelStateModel> {
     } catch (e) {
       log("error while   videos -========-=-=-=-=-=-=-=-=- $e");
     }
+  }
+
+  void speedSelectionTap() async {
+    final bool speedTap = !state.speedTaped;
+    final bool showAnimation = !state.showAnimation;
+    emit(state.copyWith(speedTaped: speedTap));
+    await Future.delayed(Duration(milliseconds: state.speedTaped ? 400 : 0));
+    emit(state.copyWith(showAnimation: showAnimation));
+  }
+
+  void changeSpeedValue(String speedValue) async {
+    emit(state.copyWith(speedValue: speedValue, speedTaped: false));
+    await Future.delayed(Duration(milliseconds: state.speedTaped ? 400 : 0));
+    emit(state.copyWith(showAnimation: !state.showAnimation));
+    
   }
 }

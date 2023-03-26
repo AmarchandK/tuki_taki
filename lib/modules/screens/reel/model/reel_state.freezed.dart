@@ -34,6 +34,9 @@ mixin _$ReelStateModel {
   bool get songAddLoading => throw _privateConstructorUsedError;
   bool get speedLoading => throw _privateConstructorUsedError;
   List<CameraStateModel> get cameraLaouts => throw _privateConstructorUsedError;
+  String get speedValue => throw _privateConstructorUsedError;
+  bool get speedTaped => throw _privateConstructorUsedError;
+  bool get showAnimation => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ReelStateModelCopyWith<ReelStateModel> get copyWith =>
@@ -64,7 +67,10 @@ abstract class $ReelStateModelCopyWith<$Res> {
       bool filterLoading,
       bool songAddLoading,
       bool speedLoading,
-      List<CameraStateModel> cameraLaouts});
+      List<CameraStateModel> cameraLaouts,
+      String speedValue,
+      bool speedTaped,
+      bool showAnimation});
 }
 
 /// @nodoc
@@ -98,6 +104,9 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
     Object? songAddLoading = null,
     Object? speedLoading = null,
     Object? cameraLaouts = null,
+    Object? speedValue = null,
+    Object? speedTaped = null,
+    Object? showAnimation = null,
   }) {
     return _then(_value.copyWith(
       videoFile: freezed == videoFile
@@ -172,6 +181,18 @@ class _$ReelStateModelCopyWithImpl<$Res, $Val extends ReelStateModel>
           ? _value.cameraLaouts
           : cameraLaouts // ignore: cast_nullable_to_non_nullable
               as List<CameraStateModel>,
+      speedValue: null == speedValue
+          ? _value.speedValue
+          : speedValue // ignore: cast_nullable_to_non_nullable
+              as String,
+      speedTaped: null == speedTaped
+          ? _value.speedTaped
+          : speedTaped // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showAnimation: null == showAnimation
+          ? _value.showAnimation
+          : showAnimation // ignore: cast_nullable_to_non_nullable
+              as bool,
     ) as $Val);
   }
 }
@@ -202,7 +223,10 @@ abstract class _$$_ReelStateModelCopyWith<$Res>
       bool filterLoading,
       bool songAddLoading,
       bool speedLoading,
-      List<CameraStateModel> cameraLaouts});
+      List<CameraStateModel> cameraLaouts,
+      String speedValue,
+      bool speedTaped,
+      bool showAnimation});
 }
 
 /// @nodoc
@@ -234,6 +258,9 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
     Object? songAddLoading = null,
     Object? speedLoading = null,
     Object? cameraLaouts = null,
+    Object? speedValue = null,
+    Object? speedTaped = null,
+    Object? showAnimation = null,
   }) {
     return _then(_$_ReelStateModel(
       videoFile: freezed == videoFile
@@ -308,6 +335,18 @@ class __$$_ReelStateModelCopyWithImpl<$Res>
           ? _value._cameraLaouts
           : cameraLaouts // ignore: cast_nullable_to_non_nullable
               as List<CameraStateModel>,
+      speedValue: null == speedValue
+          ? _value.speedValue
+          : speedValue // ignore: cast_nullable_to_non_nullable
+              as String,
+      speedTaped: null == speedTaped
+          ? _value.speedTaped
+          : speedTaped // ignore: cast_nullable_to_non_nullable
+              as bool,
+      showAnimation: null == showAnimation
+          ? _value.showAnimation
+          : showAnimation // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -333,7 +372,10 @@ class _$_ReelStateModel implements _ReelStateModel {
       this.filterLoading = false,
       this.songAddLoading = false,
       this.speedLoading = false,
-      final List<CameraStateModel> cameraLaouts = const []})
+      final List<CameraStateModel> cameraLaouts = const [],
+      this.speedValue = '1x',
+      this.speedTaped = false,
+      this.showAnimation = false})
       : _cameraList = cameraList,
         _cameraLaouts = cameraLaouts;
 
@@ -403,8 +445,18 @@ class _$_ReelStateModel implements _ReelStateModel {
   }
 
   @override
+  @JsonKey()
+  final String speedValue;
+  @override
+  @JsonKey()
+  final bool speedTaped;
+  @override
+  @JsonKey()
+  final bool showAnimation;
+
+  @override
   String toString() {
-    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraStopped: $cameraStopped, cameraPosition: $cameraPosition, cameraList: $cameraList, trimStart: $trimStart, trimEndValue: $trimEndValue, trimPlaying: $trimPlaying, timer: $timer, timeOut: $timeOut, initialCamera: $initialCamera, timerState: $timerState, filterLoading: $filterLoading, songAddLoading: $songAddLoading, speedLoading: $speedLoading, cameraLaouts: $cameraLaouts)';
+    return 'ReelStateModel(videoFile: $videoFile, isLoading: $isLoading, isCameraControllerInitialsed: $isCameraControllerInitialsed, isRecording: $isRecording, cameraStopped: $cameraStopped, cameraPosition: $cameraPosition, cameraList: $cameraList, trimStart: $trimStart, trimEndValue: $trimEndValue, trimPlaying: $trimPlaying, timer: $timer, timeOut: $timeOut, initialCamera: $initialCamera, timerState: $timerState, filterLoading: $filterLoading, songAddLoading: $songAddLoading, speedLoading: $speedLoading, cameraLaouts: $cameraLaouts, speedValue: $speedValue, speedTaped: $speedTaped, showAnimation: $showAnimation)';
   }
 
   @override
@@ -447,30 +499,40 @@ class _$_ReelStateModel implements _ReelStateModel {
             (identical(other.speedLoading, speedLoading) ||
                 other.speedLoading == speedLoading) &&
             const DeepCollectionEquality()
-                .equals(other._cameraLaouts, _cameraLaouts));
+                .equals(other._cameraLaouts, _cameraLaouts) &&
+            (identical(other.speedValue, speedValue) ||
+                other.speedValue == speedValue) &&
+            (identical(other.speedTaped, speedTaped) ||
+                other.speedTaped == speedTaped) &&
+            (identical(other.showAnimation, showAnimation) ||
+                other.showAnimation == showAnimation));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      videoFile,
-      isLoading,
-      isCameraControllerInitialsed,
-      isRecording,
-      cameraStopped,
-      cameraPosition,
-      const DeepCollectionEquality().hash(_cameraList),
-      trimStart,
-      trimEndValue,
-      trimPlaying,
-      timer,
-      timeOut,
-      initialCamera,
-      timerState,
-      filterLoading,
-      songAddLoading,
-      speedLoading,
-      const DeepCollectionEquality().hash(_cameraLaouts));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        videoFile,
+        isLoading,
+        isCameraControllerInitialsed,
+        isRecording,
+        cameraStopped,
+        cameraPosition,
+        const DeepCollectionEquality().hash(_cameraList),
+        trimStart,
+        trimEndValue,
+        trimPlaying,
+        timer,
+        timeOut,
+        initialCamera,
+        timerState,
+        filterLoading,
+        songAddLoading,
+        speedLoading,
+        const DeepCollectionEquality().hash(_cameraLaouts),
+        speedValue,
+        speedTaped,
+        showAnimation
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -498,7 +560,10 @@ abstract class _ReelStateModel implements ReelStateModel {
       final bool filterLoading,
       final bool songAddLoading,
       final bool speedLoading,
-      final List<CameraStateModel> cameraLaouts}) = _$_ReelStateModel;
+      final List<CameraStateModel> cameraLaouts,
+      final String speedValue,
+      final bool speedTaped,
+      final bool showAnimation}) = _$_ReelStateModel;
 
   @override
   File? get videoFile;
@@ -536,6 +601,12 @@ abstract class _ReelStateModel implements ReelStateModel {
   bool get speedLoading;
   @override
   List<CameraStateModel> get cameraLaouts;
+  @override
+  String get speedValue;
+  @override
+  bool get speedTaped;
+  @override
+  bool get showAnimation;
   @override
   @JsonKey(ignore: true)
   _$$_ReelStateModelCopyWith<_$_ReelStateModel> get copyWith =>

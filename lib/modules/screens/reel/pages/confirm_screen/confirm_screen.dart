@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,9 +21,13 @@ class ConfirmScreen extends StatefulWidget {
 
 class _ConfirmScreenState extends State<ConfirmScreen> {
   late final VideoPlayerController videoPlayerController;
-  final ReelCubit controller = Get.find<ReelCubit>();
+  final ReelCubit controller = Get.put(ReelCubit());
+  final List<String> speedValues = ['3x', '.5x', '2x', '3x'];
+  late final File? _file;
+
   @override
   void initState() {
+    _file = controller.state.videoFile;
     videoPlayerInitialize();
     super.initState();
   }
@@ -40,7 +44,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       videoPlayerController =
           VideoPlayerController.file(controller.state.videoFile!);
       videoPlayerController.initialize();
-      videoPlayerController.play();
+      // videoPlayerController.play();
       videoPlayerController.setVolume(1);
       videoPlayerController.setLooping(true);
       return;
@@ -48,50 +52,57 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     log("videoFile null in confirm screen");
   }
 
-  void _increaseSpeed() {
+  String _speedSelection(String speed) {
+    switch (speed) {
+      case "2x":
+        return "0.5";
+      case "4x":
+        return "0.25";
+      case "0.5x":
+        return "2";
+      case "0.25x":
+        return "4";
+      default:
+        return "0";
+    }
+  }
+
+  void changeSpeed() {
+    final String speedValue = controller.state.speedValue;
+    log(speedValue);
     videoPlayerController.setPlaybackSpeed(2);
-    controller.increaseSpeed();
+    final String command = _speedSelection(speedValue);
+    controller.increaseSpeed(speed: command, path: _file!.path);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: BlocBuilder<ReelCubit, ReelStateModel>(
         bloc: controller,
         builder: (context, state) {
           return Stack(
             fit: StackFit.expand,
             children: [
-              Center(
-                child: AspectRatio(
-                  aspectRatio: 4 / 3,
-                  child: VideoPlayer(videoPlayerController),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: TextButton(onPressed: () {}, child: const Text("Done")),
-              ),
+              // Center(child: VideoPlayer(videoPlayerContr oller)),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
-                  height: 250,
-                  margin: const EdgeInsets.only(right: 8),
-                  decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(.7),
-                      borderRadius: BorderRadius.circular(5)),
+                  width: 50,
+                  color: Colors.white.withOpacity(0.8),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      CameraPageIcons(
+                          iconString: AppCustomIcons.songAdd,
+                          onTap: () => controller.mergeVideoAndAudio()),
                       controller.state.songAddLoading
                           ? const CupertinoActivityIndicator(
                               color: Colors.white)
-                          : CameraPageIcons(
-                              iconString: AppCustomIcons.songAdd,
-                              onTap: () => controller.mergeVideoAndAudio(),
-                            ),
-                      Text(controller.state.songAddLoading ? "" : "Audio",
-                          style: const TextStyle(color: Colors.white)),
+                          : Text(controller.state.songAddLoading ? "" : "Audio",
+                              style: const TextStyle(color: Colors.white)),
                       CameraPageIcons(
                           iconString: AppCustomIcons.videoFilter,
                           onTap: () =>
@@ -103,15 +114,63 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           onTap: () =>
                               CustomRouting.pushNamed(NamedRoutes.trim.path)),
                       const Text("Trim", style: TextStyle(color: Colors.white)),
-                      IconButton(
-                        onPressed: _increaseSpeed,
-                        icon:
-                            const Icon(Icons.fast_forward, color: Colors.white),
+                      InkWell(
+                        onTap: () => controller.speedSelectionTap(),
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: CircleAvatar(
+                            radius: 15,
+                            backgroundColor: Colors.white,
+                            child: Center(
+                                child: Text(
+                              controller.state.speedValue,
+                              style: const TextStyle(color: Colors.pink),
+                            )),
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
-              )
+              ),
+              Positioned(
+                top: 480,
+                right: 5,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Stack(
+                    children: [
+                      AnimatedContainer(
+                        curve: Curves.linear,
+                        duration: const Duration(milliseconds: 500),
+                        height: state.speedTaped ? 80 : 0,
+                        width: state.speedTaped ? 70 : 0,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.black.withOpacity(0.4)),
+                        child: Wrap(
+                          children: List.generate(
+                            speedValues.length,
+                            (index) => InkWell(
+                                onTap: changeSpeed,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    speedValues[index],
+                                    style: TextStyle(
+                                      color: state.showAnimation
+                                          ? Colors.white
+                                          : Colors.transparent,
+                                    ),
+                                  ),
+                                )),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           );
         },
