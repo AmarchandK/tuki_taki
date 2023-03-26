@@ -192,9 +192,42 @@ class ReelCubit extends Cubit<ReelStateModel> {
 
   ////// Add 2x Speed ///////
 
+  String _speedCommad(String speed) {
+    switch (speed) {
+      case "2x":
+        return "0.5";
+      case "4x":
+        return "0.25";
+      case "0.5x":
+        return "2";
+      case "0.25x":
+        return "4";
+      default:
+        return "0";
+    }
+  }
+
+  void speedSelectionTap() async {
+    final bool speedTap = !state.speedTaped;
+    final bool showAnimation = !state.showAnimation;
+    emit(state.copyWith(speedTaped: speedTap));
+    await Future.delayed(Duration(milliseconds: state.speedTaped ? 400 : 0));
+    emit(state.copyWith(showAnimation: showAnimation));
+  }
+
+  void changeSpeedValue(String speedValue) async {
+    log(speedValue);
+    emit(state.copyWith(speedValue: speedValue, speedTaped: false));
+    await Future.delayed(Duration(milliseconds: state.speedTaped ? 400 : 0));
+    emit(state.copyWith(showAnimation: !state.showAnimation));
+  }
+
   void increaseSpeed({required String speed, required String path}) async {
+    changeSpeedValue(speed);
+    final String ffmpegCommad = _speedCommad(speed);
     final String outputPath = await _getTempPath();
-    final String command = '-i $path -filter:v "setpts=$speed*PTS" $outputPath';
+    final String command =
+        '-i $path -filter:v "setpts=$ffmpegCommad*PTS" $outputPath';
     FFmpegKit.execute(command).then((value) async {
       final ReturnCode? returnCode = await value.getReturnCode();
       if (returnCode != null) {
@@ -258,20 +291,5 @@ class ReelCubit extends Cubit<ReelStateModel> {
     } catch (e) {
       log("error while   videos -========-=-=-=-=-=-=-=-=- $e");
     }
-  }
-
-  void speedSelectionTap() async {
-    final bool speedTap = !state.speedTaped;
-    final bool showAnimation = !state.showAnimation;
-    emit(state.copyWith(speedTaped: speedTap));
-    await Future.delayed(Duration(milliseconds: state.speedTaped ? 400 : 0));
-    emit(state.copyWith(showAnimation: showAnimation));
-  }
-
-  void changeSpeedValue(String speedValue) async {
-    emit(state.copyWith(speedValue: speedValue, speedTaped: false));
-    await Future.delayed(Duration(milliseconds: state.speedTaped ? 400 : 0));
-    emit(state.copyWith(showAnimation: !state.showAnimation));
-    
   }
 }

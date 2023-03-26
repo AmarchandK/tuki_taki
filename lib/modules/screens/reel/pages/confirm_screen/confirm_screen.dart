@@ -52,27 +52,10 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
     log("videoFile null in confirm screen");
   }
 
-  String _speedSelection(String speed) {
-    switch (speed) {
-      case "2x":
-        return "0.5";
-      case "4x":
-        return "0.25";
-      case "0.5x":
-        return "2";
-      case "0.25x":
-        return "4";
-      default:
-        return "0";
-    }
-  }
-
-  void changeSpeed() {
-    final String speedValue = controller.state.speedValue;
-    log(speedValue);
-    videoPlayerController.setPlaybackSpeed(2);
-    final String command = _speedSelection(speedValue);
-    controller.increaseSpeed(speed: command, path: _file!.path);
+  void changeSpeed(String speed) {
+    // videoPlayerController.setPlaybackSpeed(2);
+    // controller.increaseSpeed(speed: speed, path: _file!.path);
+    controller.changeSpeedValue(speed);
   }
 
   @override
@@ -129,21 +112,10 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 480,
-                right: 5,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Stack(
-                    children: [
                       AnimatedContainer(
                         curve: Curves.linear,
                         duration: const Duration(milliseconds: 500),
-                        height: state.speedTaped ? 80 : 0,
+                        height: state.speedTaped ? 150 : 0,
                         width: state.speedTaped ? 70 : 0,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -152,7 +124,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                           children: List.generate(
                             speedValues.length,
                             (index) => InkWell(
-                                onTap: changeSpeed,
+                                onTap: () => changeSpeed(speedValues[index]),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
@@ -166,7 +138,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                                 )),
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
