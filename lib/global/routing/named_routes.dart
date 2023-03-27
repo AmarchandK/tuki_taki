@@ -10,10 +10,10 @@ enum NamedRoutes { reel, confirm, trim, filter, layout }
 extension NamedRoutesData on NamedRoutes {
   String get path {
     switch (this) {
-      case NamedRoutes.confirm:
-        return '/';
       case NamedRoutes.reel:
-        return '/reel';
+        return '/';
+      case NamedRoutes.confirm:
+        return '/confirm';
       case NamedRoutes.trim:
         return '/trim';
       case NamedRoutes.filter:
@@ -21,7 +21,7 @@ extension NamedRoutesData on NamedRoutes {
       case NamedRoutes.layout:
         return '/layout';
       default:
-        return '/confirm';
+        return '/';
     }
   }
 }

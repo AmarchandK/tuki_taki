@@ -69,9 +69,9 @@ class _VideoFilterScreenState extends State<VideoFilterScreen> {
     videoPlayerController =
         VideoPlayerController.file(controller.state.videoFile!);
     videoPlayerController.initialize();
-    // videoPlayerController.play();
-    // videoPlayerController.setVolume(1);
-    // videoPlayerController.setLooping(true);
+    videoPlayerController.play();
+    videoPlayerController.setVolume(1);
+    videoPlayerController.setLooping(true);
   }
 
   void onFilterApply(int index) {

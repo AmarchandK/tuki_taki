@@ -21,13 +21,12 @@ class ConfirmScreen extends StatefulWidget {
 
 class _ConfirmScreenState extends State<ConfirmScreen> {
   late final VideoPlayerController videoPlayerController;
-  final ReelCubit controller = Get.put(ReelCubit());
-  final List<String> speedValues = ['3x', '.5x', '2x', '3x'];
-  late final File? _file;
+  final ReelCubit controller = Get.find<ReelCubit>();
+  final List<String> speedValues = ['0.25x', '0.5x', '1x', '2x', '4x'];
+  late final File _file;
 
   @override
   void initState() {
-    _file = controller.state.videoFile;
     videoPlayerInitialize();
     super.initState();
   }
@@ -44,31 +43,37 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
       videoPlayerController =
           VideoPlayerController.file(controller.state.videoFile!);
       videoPlayerController.initialize();
-      // videoPlayerController.play();
+      videoPlayerController.play();
       videoPlayerController.setVolume(1);
       videoPlayerController.setLooping(true);
+      _file = controller.state.videoFile!;
       return;
     }
     log("videoFile null in confirm screen");
   }
 
   void changeSpeed(String speed) {
-    // videoPlayerController.setPlaybackSpeed(2);
-    // controller.increaseSpeed(speed: speed, path: _file!.path);
-    controller.changeSpeedValue(speed);
+    log(speed);
+    final newSpeed = speed.replaceAll('x', '');
+    final double controllerSpeed = double.parse(newSpeed);
+    log(controllerSpeed.toString());
+    videoPlayerController.setPlaybackSpeed(controllerSpeed);
+    controller.increaseSpeed(speed: speed, path: _file.path);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: BlocBuilder<ReelCubit, ReelStateModel>(
         bloc: controller,
         builder: (context, state) {
           return Stack(
             fit: StackFit.expand,
             children: [
-              // Center(child: VideoPlayer(videoPlayerContr oller)),
+              Center(
+                  child: AspectRatio(
+                      aspectRatio: 4 / 3,
+                      child: VideoPlayer(videoPlayerController))),
               Align(
                 alignment: Alignment.centerRight,
                 child: Container(
@@ -115,7 +120,7 @@ class _ConfirmScreenState extends State<ConfirmScreen> {
                       AnimatedContainer(
                         curve: Curves.linear,
                         duration: const Duration(milliseconds: 500),
-                        height: state.speedTaped ? 150 : 0,
+                        height: state.speedTaped ? 180 : 0,
                         width: state.speedTaped ? 70 : 0,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),

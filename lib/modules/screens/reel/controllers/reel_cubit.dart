@@ -190,7 +190,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     return mediaInfo!.path!;
   }
 
-  ////// Add 2x Speed ///////
+  ////// Change Speed ///////
 
   String _speedCommad(String speed) {
     switch (speed) {
@@ -215,7 +215,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
     emit(state.copyWith(showAnimation: showAnimation));
   }
 
-  void changeSpeedValue(String speedValue) async {
+  void _changeSpeedValue(String speedValue) async {
     log(speedValue);
     emit(state.copyWith(speedValue: speedValue, speedTaped: false));
     await Future.delayed(Duration(milliseconds: state.speedTaped ? 400 : 0));
@@ -223,7 +223,7 @@ class ReelCubit extends Cubit<ReelStateModel> {
   }
 
   void increaseSpeed({required String speed, required String path}) async {
-    changeSpeedValue(speed);
+    _changeSpeedValue(speed);
     final String ffmpegCommad = _speedCommad(speed);
     final String outputPath = await _getTempPath();
     final String command =
